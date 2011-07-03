@@ -29,6 +29,8 @@ fan_support_thickness=11;
 fan_diameter=36;
 fan_hole_height=5.5;
 
+holder_separation=18;
+
 for (i=[-1,1])
 translate([0,i*(belt_clamp_width+1),0])
 belt_clamp();
@@ -37,7 +39,7 @@ belt_clamp_channel();
 
 gregs_x_carriage();
 
-holder_separation=18;
+//y_axis_holder ();
 
 module gregs_x_carriage(with_fanmount=true) 
 {
@@ -178,8 +180,6 @@ echo ("lm8uu_holder_width",50-lm8uu_holder_width);
 //cylinder(r=m4_nut_diameter/2,h=10,$fn=6);
 
 screw_hole_r=4/2;
-
-//y_axis_holder ();
 
 module y_axis_holder()
 {
