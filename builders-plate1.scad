@@ -7,8 +7,8 @@ translate([0,55,0])
 
 rotate(90)
 {
-	translate([-30,-35,0]) 
-	barclamp();
+//	translate([-30,-35,0]) 
+//	barclamp();
 	
 	translate([55,5,0]) 
 	rotate(180)
@@ -24,8 +24,8 @@ rotate(90)
 translate([0,87,0])
 rotate(90)
 {
-	translate([-30,-35,0]) 
-	barclamp();
+//	translate([-30,-35,0]) 
+//	barclamp();
 	
 	translate([55,5,0]) 
 	rotate(180)

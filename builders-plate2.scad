@@ -15,6 +15,14 @@ union ()
 	rotate(180)
 	barclamp();
 
+	translate([-10,15,0]) 
+	rotate(180)
+	barclamp();
+
+	translate([-8,-2,0]) 
+	rotate(180)
+	barclamp();
+
 	translate([4,32,0]) 
 	rotate(180)
 	barclamp();
