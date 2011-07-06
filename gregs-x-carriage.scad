@@ -5,20 +5,10 @@
 // Greg Frost
 //https://github.com/GregFrost/PrusaMendel
 
-include <configuration.scad>
+include <gregs-lm8uu-holder.scad>
 
-/**
- * Slides on the x-axis with extruder.
- * @name X carriage
- * @category Printed
- * @using 4 m3x10
- * @using 4 m3washer
- * @using 4 m3nut
- * @using 4 bushing
- */ 
+holder_separation=18;
 
-belt_clamp_thickness=2; 
-belt_clamp_width=m3_diameter+3*belt_clamp_thickness+2;
 fan_hole_separation=32; // check
 fan_support_block=11;
 fan_trap_width=3;
@@ -26,7 +16,18 @@ fan_support_thickness=11;
 fan_diameter=36;
 fan_hole_height=5.5;
 
-holder_separation=18;
+belt_clamp_thickness=2; 
+belt_clamp_width=m3_diameter+3*belt_clamp_thickness+2;
+belt_clamp_hole_separation=10;
+belt_clamp_height=m3_diameter+2*belt_clamp_thickness;
+belt_clamp_length=belt_clamp_hole_separation+m3_diameter+2*belt_clamp_thickness;
+
+belt_width=6;
+belt_thickness=1.5; 
+tooth_height=1.5;
+tooth_spacing=5;
+
+belt_clamp_channel_height=belt_thickness+tooth_height+belt_clamp_thickness*2;
 
 for (i=[-1,1])
 translate([0,i*(belt_clamp_width+1),0])
@@ -35,8 +36,6 @@ belt_clamp();
 belt_clamp_channel();
 
 gregs_x_carriage();
-
-//y_axis_holder ();
 
 module gregs_x_carriage(with_fanmount=true) 
 {
@@ -58,15 +57,16 @@ module gregs_x_carriage(with_fanmount=true)
 
 			barbell (
 				[25-lm8uu_holder_width/2,holder_separation/2+lm8uu_holder_length-8],
-				[-25-13.5+belt_clamp_hole_separation/2,1*(lm8uu_holder_length/2+belt_clamp_width/2)],
+				[-25-13.5+belt_clamp_hole_separation/2,
+				1*(lm8uu_holder_length/2+belt_clamp_width/2)],
 				8,belt_clamp_width/2,130,130);
 
 			barbell (
 				[25-lm8uu_holder_width/2,-holder_separation/2-lm8uu_holder_length+8],
-				[-25-13.5+belt_clamp_hole_separation/2,-1*(lm8uu_holder_length/2+belt_clamp_width/2)],
+				[-25-13.5+belt_clamp_hole_separation/2,
+				-1*(lm8uu_holder_length/2+belt_clamp_width/2)],
 				8,belt_clamp_width/2,130,130);
 
-color([0,0,1])
 			polygon(points=[
 				[-25-lm8uu_holder_width/2,1*(lm8uu_holder_length/2+belt_clamp_width/2)],
 				[-25-lm8uu_holder_width/2,-1*(lm8uu_holder_length/2+belt_clamp_width/2)],
@@ -75,18 +75,17 @@ color([0,0,1])
 				paths=[[0,1,2,3]]);
 				
 			}
-//			render()
+
 			difference()
 			{
 				cylinder(r=25+m4_diameter,h=6);
-				translate([25-lm8uu_holder_width/2+lm8uu_support_thickness,-lm8uu_holder_length,-1])
+				translate([25-lm8uu_holder_width/2+lm8uu_support_thickness,
+					-lm8uu_holder_length,-1])
 				cube([lm8uu_holder_width,2*lm8uu_holder_length,8]);
 				translate([-25-lm8uu_holder_width/2,-lm8uu_holder_length/2,-1])
 				cube([lm8uu_holder_width,lm8uu_holder_length,8]);
 			}
 
-//			belt_support_offset=25+17.5;
-		
 			for (i=[-1,1])
 			translate([-25-13.5-1,i*(lm8uu_holder_length/2+belt_clamp_width/2)])
 			rotate(90*(i+1)+180) 
@@ -103,7 +102,6 @@ color([0,0,1])
 		translate([0,0,-1])
 		cylinder(r=21,h=lm8uu_support_thickness*2+2);
 
-
 		for (i=[-1,1])
 		translate([-25-13.5-1,i*(lm8uu_holder_length/2+belt_clamp_width/2)])
 		rotate(90*(i+1)+180) 
@@ -111,7 +109,8 @@ color([0,0,1])
 
 		// Cable tie holes.
 		for (i=[-1,1])
-		translate([25-lm8uu_holder_width/2,(holder_separation/2+lm8uu_holder_length*0.7)*i,5])
+		translate([25-lm8uu_holder_width/2,
+			(holder_separation/2+lm8uu_holder_length*0.7)*i,5])
 		rotate([0,-30,0])
 		cube([2,4,20],center=true);
 
@@ -147,89 +146,14 @@ module cable_tie_holes ()
 	rotate([0,-30,0])
 	cube([2,4,20],center=true);
 
-#	for (i=[-1,1])
+	for (i=[-1,1])
 	{
 		translate([-25+lm8uu_holder_width/2,6.5*i,5])
 		rotate([0,30,0])
 		translate([2,0,0])
 		cube([6,4,20],center=true);
-
-//		translate([-25-lm8uu_holder_width/2-1,6.5*i-2,-1.9])
-//		cube([lm8uu_holder_width+2,4,1.9]);
 	}
 }
-
-clearance=0.7;
-lm8uu_diameter=15+clearance;
-lm8uu_length=24+clearance;
-lm8uu_support_thickness=3.2; 
-lm8uu_end_diameter=m8_diameter+1.5;
-
-lm8uu_holder_width=lm8uu_diameter+2*lm8uu_support_thickness;
-lm8uu_holder_length=lm8uu_length+2*lm8uu_support_thickness;
-lm8uu_holder_height=lm8uu_diameter*0.75+lm8uu_support_thickness;
-
-lm8uu_holder_gap=(lm8uu_holder_length-6*lm8uu_support_thickness)/2;
-
-echo ("lm8uu_holder_width",50-lm8uu_holder_width);
-
-//translate([25,-m4_nut_diameter/2,0])
-//cylinder(r=m4_nut_diameter/2,h=10,$fn=6);
-
-screw_hole_r=4/2;
-
-module y_axis_holder()
-{
-	difference()
-	{
-		render()
-		lm8uu_bearing_holder();
-		for (hole=[-1,1])
-		{
-			translate([lm8uu_holder_width/2,lm8uu_holder_length/2+hole*(lm8uu_support_thickness+lm8uu_holder_gap/2),0])
-			{
-				cylinder(r1=screw_hole_r,r2=screw_hole_r+(lm8uu_support_thickness+1)/2,h=lm8uu_support_thickness+1);
-				translate([0,0,-1])
-				cylinder(r=screw_hole_r,h=2);
-			}
-		}
-	}
-}
-
-module lm8uu_bearing_holder()
-{
-	difference()
-	{
-		cube([lm8uu_holder_width,lm8uu_holder_length,lm8uu_holder_height]);
-		translate([lm8uu_holder_width/2,0,lm8uu_holder_width/2])
-		rotate([-90,0,0])
-		translate([0,0,lm8uu_support_thickness])
-		cylinder(r=lm8uu_diameter/2,h=lm8uu_length,$fn=40);
-
-		translate([lm8uu_holder_width/2,0,lm8uu_holder_width/2])
-		rotate([-90,0,0])
-		translate([0,0,-1])
-		{
-			cylinder(r=lm8uu_end_diameter/2,h=lm8uu_holder_length+2,$fn=40);
-			translate([-lm8uu_end_diameter/2,-lm8uu_end_diameter,0])
-			cube([lm8uu_end_diameter,lm8uu_end_diameter,lm8uu_holder_length+2]);
-		}
-
-		translate([-1,2*lm8uu_support_thickness,lm8uu_support_thickness])
-		cube([lm8uu_holder_width+2,lm8uu_holder_gap,
-			lm8uu_holder_height-lm8uu_support_thickness+1]);
-
-		translate([-1,4*lm8uu_support_thickness+lm8uu_holder_gap,
-			lm8uu_support_thickness])
-		cube([lm8uu_holder_width+2,lm8uu_holder_gap,
-			lm8uu_holder_height-lm8uu_support_thickness+1]);
-	}
-}
-
-belt_clamp_hole_separation=10;
-
-belt_clamp_height=m3_diameter+2*belt_clamp_thickness;
-belt_clamp_length=belt_clamp_hole_separation+m3_diameter+2*belt_clamp_thickness;
 
 module belt_clamp_socket()
 {
@@ -238,7 +162,8 @@ module belt_clamp_socket()
 		translate([0,0,belt_clamp_height/2])
 		union()
 		{
-			cube([belt_clamp_hole_separation,belt_clamp_width,belt_clamp_height],center=true);
+			cube([belt_clamp_hole_separation,belt_clamp_width,belt_clamp_height],
+				center=true);
 			for(i=[-1,1])
 			translate([i*belt_clamp_hole_separation/2,0,0])
 			cylinder(r=belt_clamp_width/2,h=belt_clamp_height,center=true);
@@ -247,13 +172,6 @@ module belt_clamp_socket()
 	}
 }
 
-belt_width=6;
-belt_thickness=1.5; 
-tooth_height=1.5;
-tooth_spacing=5;
-
-belt_clamp_channel_height=belt_thickness+tooth_height+belt_clamp_thickness*2;
-
 module belt_clamp_channel()
 {
 	difference()
@@ -261,7 +179,8 @@ module belt_clamp_channel()
 		translate([0,0,belt_clamp_channel_height/2])
 		union()
 		{
-			cube([belt_clamp_hole_separation,belt_clamp_width,belt_clamp_channel_height],center=true);
+			cube([belt_clamp_hole_separation,
+				belt_clamp_width,belt_clamp_channel_height],center=true);
 			for(i=[-1,1])
 			translate([i*belt_clamp_hole_separation/2,0,0])
 			cylinder(r=belt_clamp_width/2,h=belt_clamp_channel_height,center=true);
@@ -272,7 +191,8 @@ module belt_clamp_channel()
 		rotate(360/16)
 		cylinder(r=m3_diameter/2,h=belt_clamp_channel_height+2,$fn=8);
 
-		translate([-belt_width/2,-belt_clamp_width/2-1,belt_clamp_channel_height-belt_thickness-tooth_height])
+		translate([-belt_width/2,-belt_clamp_width/2-1,
+			belt_clamp_channel_height-belt_thickness-tooth_height])
 		cube([belt_width,belt_clamp_width+2,belt_thickness+tooth_height+1]);
 	}
 }
@@ -305,7 +225,8 @@ module belt_clamp()
 		translate([0,0,belt_clamp_clamp_height/2])
 		union()
 		{
-			cube([belt_clamp_hole_separation,belt_clamp_width,belt_clamp_clamp_height],center=true);
+			cube([belt_clamp_hole_separation,belt_clamp_width,
+				belt_clamp_clamp_height],center=true);
 			for(i=[-1,1])
 			translate([i*belt_clamp_hole_separation/2,0,0])
 			cylinder(r=belt_clamp_width/2,h=belt_clamp_clamp_height,center=true);
@@ -317,7 +238,8 @@ module belt_clamp()
 		cylinder(r=m3_diameter/2,h=belt_clamp_clamp_height+2,$fn=8);
 
 		for(i=[-1:1])
-		translate([-belt_width/2,-tooth_spacing/4+i*tooth_spacing,belt_clamp_clamp_height-tooth_height])
+		translate([-belt_width/2,-tooth_spacing/4+i*tooth_spacing,
+			belt_clamp_clamp_height-tooth_height])
 		cube([belt_width,tooth_spacing/2,tooth_height+1]);
 	}
 }
@@ -358,7 +280,8 @@ module fan_mount()
 		union ()
 		{
 			translate([0,0,fan_support_block/4])
-			cube([fan_hole_separation+fan_support_block,fan_support_thickness,fan_support_block/2],center=true);
+			cube([fan_hole_separation+fan_support_block,fan_support_thickness,
+				fan_support_block/2],center=true);
 			
 			for (i=[-1,1])
 			translate([i*fan_hole_separation/2,0,fan_support_block/2])
@@ -366,9 +289,11 @@ module fan_mount()
 			cylinder(r=fan_support_block/2,h=fan_support_block,center=true,$fn=20);
 			
 			translate([0,0,fan_support_block/2])
-			cube([fan_hole_separation,fan_support_thickness,fan_support_block],center=true);
+			cube([fan_hole_separation,fan_support_thickness,fan_support_block],
+				center=true);
 			translate([0,6,lm8uu_support_thickness/2])
-			cube([fan_hole_separation+fan_support_block,fan_support_thickness+12,lm8uu_support_thickness],center=true);
+			cube([fan_hole_separation+fan_support_block,fan_support_thickness+12,
+				lm8uu_support_thickness],center=true);
 		}
 		for(i=[-1,1])
 		{
@@ -376,14 +301,17 @@ module fan_mount()
 			{
 				rotate([90,0,0])
 				rotate(180/8)
-				cylinder(r=m3_diameter/2,h=fan_support_thickness+2,center=true,$fn=8);
+				cylinder(r=m3_diameter/2,h=fan_support_thickness+2,
+					center=true,$fn=8);
 				translate([0,0,0])
 				rotate([90,0,0])
 				rotate([0,0,180/6])
-				cylinder(r=(m3_nut_diameter-0.5)/2,h=fan_trap_width,center=true,$fn=6);
+				cylinder(r=(m3_nut_diameter-0.5)/2,h=fan_trap_width,
+					center=true,$fn=6);
 				color([1,0,0])
 				translate([0,0,-(fan_hole_height+1)/2])
-				cube([(m3_nut_diameter-0.5)*cos(30),fan_trap_width,fan_hole_height+1],center=true);
+				cube([(m3_nut_diameter-0.5)*cos(30),fan_trap_width,
+					fan_hole_height+1],center=true);
 			}
 		}
 		translate([0,0,fan_hole_separation/2+fan_hole_height])
