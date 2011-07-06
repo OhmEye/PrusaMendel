@@ -24,18 +24,18 @@ corection = 1.17;
 
 use <x-end.scad>
 
-module xendmotor(curved_sides=false)
+xendmotor(endstop_mount=true,curved_sides=true,closed_end=true);
+
+module xendmotor(endstop_mount=false,curved_sides=false,closed_end=true)
 {
 	difference ()
 	{
 		union ()
 		{
-			mirror()
-			xend(closed_end=true,curved_sides=curved_sides);
+			xend(endstop_mount=endstop_mount,
+				closed_end=closed_end,
+				curved_sides=curved_sides);
 //			import_stl("x-end.stl");
-		
-			//translate(v = [0, 35, 12.5]) 
-			//xend_nema17();
 		
 			positioned_motor_mount();
 		}
@@ -43,8 +43,6 @@ module xendmotor(curved_sides=false)
 		xendcorners(5,0,5,5,0);
 	}
 }
-
-xendmotor();
 
 // GregFrosts stuff
 nema17_hole_spacing=1.2*25.4; 

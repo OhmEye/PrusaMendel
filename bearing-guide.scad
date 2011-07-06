@@ -7,7 +7,7 @@
 */
 
 layer_height=0.4;
-perimeter_w_over_t=1.9;
+perimeter_w_over_t=2;
 
 single_layer_width=layer_height*perimeter_w_over_t;
 bearing_inner=22.2;
@@ -53,5 +53,5 @@ module outer()
 
 inner();
 
-//translate([34,0,0])
-//outer();
+translate([34,0,0])
+outer();
