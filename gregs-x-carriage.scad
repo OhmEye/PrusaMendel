@@ -1,12 +1,9 @@
-// PRUSA Mendel  
+// Gregs PRUSA Mendel  
 // X-carriage
 // Used for sliding on X axis
 // GNU GPL v2
-// Josef Průša
-// josefprusa@me.com
-// prusadjs.cz
-// http://www.reprap.org/wiki/Prusa_Mendel
-// http://github.com/prusajr/PrusaMendel
+// Greg Frost
+//https://github.com/GregFrost/PrusaMendel
 
 include <configuration.scad>
 
