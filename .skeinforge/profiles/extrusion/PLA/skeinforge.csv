@@ -1,0 +1,9 @@
+Format is tab separated skeinforge settings.
+_Name                          	Value
+WindowPosition	293+9
+Open File for Skeinforge	C:/Users/Greg/Desktop/reprap/speed_test.stl
+analyze	False
+craft	True
+help	False
+meta	False
+profile	False
