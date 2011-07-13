@@ -25,6 +25,7 @@ pad_width=7;
 pad_connector_height=3.3;
 bushing_support_width=17;
 rod_support_width=10;
+pad_groove_depth=0.7;
 
 module xend_side(closed_end=true,curved_sides=false)
 {
@@ -116,7 +117,12 @@ module xend_side(closed_end=true,curved_sides=false)
 				cube([pad_width,
 					xend_length-2*solid_end_width-2*slot_width,
 					pad_height]);
-	
+				
+				translate([0,solid_end_width+slot_width-1,-xend_height/2+pad_height+m8_diameter/2-pad_groove_depth])
+				rotate([-90,0,0])
+				rotate(180/20)
+				cylinder(r=m8_diameter/2,h=xend_length-2*solid_end_width-2*slot_width+2,$fn=20);
+
 				translate([axis_diameter_larger,0,0])
 				rotate([0,8,0])
 				translate([-slot_width,solid_end_width,-xend_height/2-1])
