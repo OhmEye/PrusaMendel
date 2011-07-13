@@ -1,0 +1,1 @@
+import_stl("gear6_outer.stl");
