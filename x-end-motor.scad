@@ -24,7 +24,7 @@ corection = 1.17;
 
 use <x-end.scad>
 
-xendmotor(endstop_mount=true,curved_sides=true,closed_end=true);
+xendmotor(endstop_mount=true,curved_sides=false,closed_end=true);
 
 module xendmotor(endstop_mount=false,curved_sides=false,closed_end=true)
 {
@@ -34,7 +34,8 @@ module xendmotor(endstop_mount=false,curved_sides=false,closed_end=true)
 		{
 			xend(endstop_mount=endstop_mount,
 				closed_end=closed_end,
-				curved_sides=curved_sides);
+				curved_sides=curved_sides,
+				override_height=56.5);
 //			import_stl("x-end.stl");
 		
 			positioned_motor_mount();
@@ -153,6 +154,11 @@ module motor_mount_holes ()
 		translate([0,0,-24])
 		cylinder(h=25,r=7/2);
 	}
+	
+	translate([-7/2-0.5-(nema17_width/2-nema17_hole_spacing/2),0,0])
+	rotate(270)
+	translate([0,0,-1])
+	cube([nema17_width/2,nema17_width/2,thickness+2]);
 }
 
 module barbell (r1,r2,r3,r4,separation) 

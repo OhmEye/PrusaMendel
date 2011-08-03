@@ -149,24 +149,25 @@ module xend_side(closed_end=true,curved_sides=false)
 	}
 }
 
-module xend(endstop_mount=false,closed_end=true,curved_sides=false)
+module xend(endstop_mount=false,closed_end=true,curved_sides=false,override_height=-1)
 {
-	translate([0,9.5,0])bushing(true,13);
-	translate([0,4.8,0.5])cube(size = [8,2,1],center=true);
-	translate([0,4.8,12.5])cube(size = [8,2,1],center=true);
-	translate([0,9.5,48])bushing(true,13);
-	translate([0,4.8,48+0.5])cube(size = [8,2,1],center=true);
-	translate([0,4.8,48+12.5])cube(size = [8,2,1],center=true);
-	translate([0,9.5,32])
-	{
-		difference()
-		{
-			bushing(true,16);
-			translate([0,3,2]) 
-			rotate([45,0,0])
-			cube([16,30,16],center=true);
-		}
-	}
+//	translate([0,9.5,0])bushing(true,13);
+//	translate([0,4.8,0.5])cube(size = [8,2,1],center=true);
+//	translate([0,4.8,12.5])cube(size = [8,2,1],center=true);
+//	translate([0,9.5,48])bushing(true,13);
+//	translate([0,4.8,48+0.5])cube(size = [8,2,1],center=true);
+//	translate([0,4.8,48+12.5])cube(size = [8,2,1],center=true);
+//	translate([0,9.5,32])
+//	{
+//		difference()
+//		{
+//			bushing(true,16);
+//			translate([0,3,2]) 
+//			rotate([45,0,0])
+//			cube([16,30,16],center=true);
+//		}
+//	}
+	z_linear_bearings(luu_version=true,override_height=override_height);
 
 	difference()
 	{
@@ -180,8 +181,8 @@ module xend(endstop_mount=false,closed_end=true,curved_sides=false)
 			}	
 
 			// Slider.
-			translate([0,6.5,30]) 
-			cube([15.5+2*thin_wall,17,60],center=true);
+//			translate([0,6.5,30]) 
+//			cube([15.5+2*thin_wall,17,60],center=true);
 
 			//Nut Trap
 			translate([0,-20,0]) 
@@ -199,9 +200,9 @@ module xend(endstop_mount=false,closed_end=true,curved_sides=false)
 			}
 		}
 
-		// Slider cutout.
+		// Slider cutout. 
 		translate([0,10,32.5]) 
-		cube([17,17,70],center=true);
+		cube([22.5,22.5,70],center=true);
 
 		//Rod hole.
 		difference()
@@ -260,4 +261,4 @@ module xendcorners(dia1, dia2, dia3, dia4, height=0)
 }
 //xendcorners(5,5,5,5,0);
 
-xend(endstop_mount=false,closed_end=false,curved_sides=false);
+xend(endstop_mount=false,closed_end=false,curved_sides=false,override_height=65);
