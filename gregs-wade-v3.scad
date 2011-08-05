@@ -10,16 +10,17 @@ include<configuration.scad>
 malcolm_hotend_mount=1;
 groovemount=2;
 peek_reprapsource_mount=4;
-arcol_hotend_mount=8;//not yet supported.
+arcol_mount=8;
 mendel_parts_v6_mount=16; 
-grrf_peek_mount_holes=32;
+grrf_peek_mount=32;
+wildseyed_mount=64;
+
 
 //Set the hotend_mount to the sum of the hotends that you want the extruder to support:
 //e.g. wade(hotend_mount=groovemount+peek_reprapsource_mount);
 
 
-wade(hotend_mount=mendel_parts_v6_mount);
-//%import_stl("extruder-body.stl");
+wade(hotend_mount=wildseyed_mount);
 
 //Place for printing
 //translate([78,-10,15.25])
@@ -27,8 +28,6 @@ wade(hotend_mount=mendel_parts_v6_mount);
 
 //Place for assembly.
 //wadeidler(); 
-
-//import_stl("idler.stl");
 
 //===================================================
 // Parameters defining the wade body:
@@ -66,11 +65,12 @@ filament_feed_hole_offset=filament_diameter+0.5;
 idler_nut_trap_depth=7.5;
 idler_nut_thickness=3;
 
-gear_separation=7.4444+32.0111 +0.25;
+gear_separation=7.4444+32.0111+0.25;
 
-function motor_hole(hole)=
-[motor_mount_translation[0],motor_mount_translation[1]]+
-rotated(45+motor_mount_rotation+hole*90)*nema17_hole_spacing/sqrt(2);
+function motor_hole(hole)=[
+	motor_mount_translation[0],
+	motor_mount_translation[1]]+
+	rotated(45+motor_mount_rotation+hole*90)*nema17_hole_spacing/sqrt(2);
 
 // Parameters defining the idler.
 
@@ -114,11 +114,11 @@ module wade (hotend_mount=0)
 
 			// Connect block to top of motor mount.
 			linear_extrude(height=motor_mount_thickness)
-			barbell (block_top_right-[0,5],motor_hole(0),5,nema17_support_d/2,100,60);
+			barbell(block_top_right-[0,5],motor_hole(0),5,nema17_support_d/2,100,60);
 
 			//Connect motor mount to base.
 			linear_extrude(height=motor_mount_thickness)
-			barbell ([base_length-base_leadout,
+			barbell([base_length-base_leadout,
 				base_thickness/2],motor_hole(2),base_thickness/2,
 				nema17_support_d/2,100,60);
 
@@ -200,15 +200,19 @@ module wade (hotend_mount=0)
 				groovemount_holes ();
 			if (in_mask (hotend_mount,peek_reprapsource_mount))
 				peek_reprapsource_holes ();
+			if (in_mask (hotend_mount,arcol_mount))
+				arcol_mount_holes ();
 			if (in_mask (hotend_mount,mendel_parts_v6_mount)) 
 				mendel_parts_v6_hotend ();
-			if (in_mask(hotend_mount,grrf_peek_mount_holes))
+			if (in_mask(hotend_mount,grrf_peek_mount))
 				grrf_peek_mount_holes();
+			if (in_mask(hotend_mount,wildseyed_mount))
+				wildseyed_mount_holes();
 		}
 	}
 }
 
-function in_mask (mask,value) = (mask % (value*2)) > (value-1); 
+function in_mask(mask,value)=(mask%(value*2))>(value-1); 
 
 module block_holes()
 {
@@ -540,6 +544,7 @@ function rotated(a)=[cos(a),sin(a),0];
 // Modules for defining holes for hotend mounts:
 // These assume the extruder is verical with the bottom filament exit hole at [0,0,0].
 
+//malcolm_hotend_holes ();
 module malcolm_hotend_holes ()
 {
 	extruder_recess_d=16; 
@@ -550,6 +555,7 @@ module malcolm_hotend_holes ()
 	cylinder(r=extruder_recess_d/2,h=extruder_recess_h+1);	
 }
 
+//groovemount_holes ();
 module groovemount_holes ()
 {
 	extruder_recess_d=16; 
@@ -560,6 +566,7 @@ module groovemount_holes ()
 	cylinder(r=extruder_recess_d/2,h=extruder_recess_h+1);	
 }
 
+//peek_reprapsource_holes ();
 module peek_reprapsource_holes ()
 {
 	extruder_recess_d=11;
@@ -575,6 +582,30 @@ module peek_reprapsource_holes ()
 	cylinder(r=m4_diameter/2-0.5/* tight */,h=wade_block_depth+2,center=true); 
 }
 
+//arcol_mount_holes();
+module arcol_mount_holes() 
+{ 
+	hole_axis_rotation=42.5; 
+	hole_separation=30;
+	hole_slot_height=4;
+	for(mount=[-1,1])
+	translate([hole_separation/2*mount,-7,0]) 
+	{
+		translate([0,0,-1])
+		cylinder(r=m4_diameter/2,h=base_thickness+2,$fn=8);
+		
+		translate([0,0,base_thickness/2])
+		//rotate(hole_axis_rotation)
+		{
+			cylinder(r=m4_nut_diameter/2,h=base_thickness/2+hole_slot_height,$fn=6);
+			translate([0,-m4_nut_diameter,hole_slot_height/2+base_thickness/2]) 
+			cube([m4_nut_diameter,m4_nut_diameter*2,hole_slot_height],
+			center=true);
+		}
+	}
+}
+
+//mendel_parts_v6_hotend ();
 module mendel_parts_v6_hotend () 
 {
 	extruder_recess_d=13.4;
@@ -606,9 +637,26 @@ module mendel_parts_v6_hotend ()
 	}
 }
 
+//grrf_peek_mount_holes();
 module grrf_peek_mount_holes()  
 {  
 	extruder_recess_d=16.5;
+	extruder_recess_h=10;
+
+	// Recess in base
+	translate([0,0,-1])
+	cylinder(r=extruder_recess_d/2,h=extruder_recess_h+1);
+	
+	for (hole=[-1,1])
+	rotate(90,[1,0,0])
+	translate([hole*(extruder_recess_d/2-1.5),3+1.5,-wade_block_depth/2-1])
+	cylinder(r=1.5,h=wade_block_depth+2,$fn=10);
+}
+
+//wildseyed_mount_holes();
+module wildseyed_mount_holes()  
+{  
+	extruder_recess_d=13.4;
 	extruder_recess_h=10;
 
 	// Recess in base
