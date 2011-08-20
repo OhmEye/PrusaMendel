@@ -89,7 +89,6 @@ module ybract()
 		translate(motor_mount_position)
 		rotate(motor_mount_rotation)
 		{
-%			import_stl("pulley_ausxmods.stl");
 			for (hole=[2:4])
 			rotate([0,0,90*hole])
 			translate(nema17_hole_spacing*[1,1,0]/2)

@@ -11,25 +11,11 @@
 // Thank you guys for your great work
 
 include <configuration.scad>
+use <teardrop.scad>
 
 vertex(with_foot=true);
 
 %import_stl("frame-vertex.stl");
-
-//teardrop();
-
-module teardrop (r=8,h=20)
-{
-	rotate([-270,0,90])
-	linear_extrude(height=h)
-	{
-		circle(r=r);
-		polygon(points=[[0,0],[r*cos(30),r*sin(30)],[0.5*r,r],[-0.5*r,r],[-r*cos(30),r*sin(30)]],
-				paths=[[0,1,2,3,4]]);
-	}
-}
-
-
 
 vfvertex_height=m8_diameter+4.5;
 
