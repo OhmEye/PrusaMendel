@@ -24,9 +24,9 @@ corection = 1.17;
 
 use <x-end.scad>
 
-xendmotor(endstop_mount=true,curved_sides=false,closed_end=true);
+xendmotor(endstop_mount=true,curved_sides=false,closed_end=true,luu_version=false);
 
-module xendmotor(endstop_mount=false,curved_sides=false,closed_end=true)
+module xendmotor(endstop_mount=false,curved_sides=false,closed_end=true,luu_version=false)
 {
 	difference ()
 	{
@@ -35,7 +35,8 @@ module xendmotor(endstop_mount=false,curved_sides=false,closed_end=true)
 			xend(endstop_mount=endstop_mount,
 				closed_end=closed_end,
 				curved_sides=curved_sides,
-				override_height=56.5);
+				override_height=luu_version?56.5:-1,
+				luu_version=luu_version);
 //			import_stl("x-end.stl");
 		
 			positioned_motor_mount();

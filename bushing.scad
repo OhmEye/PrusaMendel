@@ -138,10 +138,10 @@ assign (height=(override_height>0)?override_height:luu_version?luu_height+4+1:65
 	else
 	{
 	translate([-(10-5.5)/2-5.5,0,0+1]) cube([10-5.5,20,2], center = true);
-	translate([-(10-5.5)/2-5.5,0,uu_height+0.5+2+1]) cube([10-5.5,20,2], center = true);
+	translate([-(10-5.5)/2-5.5,0,uu_height+1+2+1]) cube([10-5.5,20,2], center = true);
 	
 	translate([-(10-5.5)/2-5.5,0,65-1]) cube([10-5.5,20,2], center = true);
-	translate([-(10-5.5)/2-5.5,0,65-uu_height-0.5-2-1]) cube([10-5.5,20,2], center = true);
+	translate([-(10-5.5)/2-5.5,0,65-uu_height-1-2-1]) cube([10-5.5,20,2], center = true);
 	}
 }
 }

@@ -14,13 +14,13 @@ arcol_mount=8;
 mendel_parts_v6_mount=16; 
 grrf_peek_mount=32;
 wildseyed_mount=64;
-
+geared_extruder_nozzle=128; // http://reprap.org/wiki/Geared_extruder_nozzle
 
 //Set the hotend_mount to the sum of the hotends that you want the extruder to support:
 //e.g. wade(hotend_mount=groovemount+peek_reprapsource_mount);
 
 
-wade(hotend_mount=wildseyed_mount);
+wade(hotend_mount=geared_extruder_nozzle);
 
 //Place for printing
 //translate([78,-10,15.25])
@@ -203,11 +203,13 @@ module wade (hotend_mount=0)
 			if (in_mask (hotend_mount,arcol_mount))
 				arcol_mount_holes ();
 			if (in_mask (hotend_mount,mendel_parts_v6_mount)) 
-				mendel_parts_v6_hotend ();
+				mendel_parts_v6_holes(insulator_d=12.7);
 			if (in_mask(hotend_mount,grrf_peek_mount))
 				grrf_peek_mount_holes();
 			if (in_mask(hotend_mount,wildseyed_mount))
 				wildseyed_mount_holes();
+			if (in_mask(hotend_mount,geared_extruder_nozzle))
+				mendel_parts_v6_holes(insulator_d=15);
 		}
 	}
 }
@@ -605,10 +607,10 @@ module arcol_mount_holes()
 	}
 }
 
-//mendel_parts_v6_hotend ();
-module mendel_parts_v6_hotend () 
+//mendel_parts_v6_holes ();
+module mendel_parts_v6_holes (insulator_d=12.7) 
 {
-	extruder_recess_d=13.4;
+	extruder_recess_d=insulator_d+0.7;
 	extruder_recess_h=10; 
 	hole_axis_rotation=42.5; 
 	hole_separation=30;

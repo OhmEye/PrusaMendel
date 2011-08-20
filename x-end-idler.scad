@@ -25,13 +25,13 @@ use <teardrop.scad>
 
 wall_thickness=5;
 
-module xendidler(closed_end=true,curved_sides=true)
+module xendidler(closed_end=true,curved_sides=true,luu_version=false)
 {
 	difference()
 	{
 		union()
 		{
-			xend(closed_end=closed_end,curved_sides=curved_sides);
+			xend(closed_end=closed_end,curved_sides=curved_sides,luu_version=luu_version);
 //			import_stl("x-end.stl");
 
 			translate([-25-15.8/2+24.8/2,-21.5,25.3+12.5]) 

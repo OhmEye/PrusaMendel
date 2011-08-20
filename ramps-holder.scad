@@ -17,11 +17,11 @@ include <configuration.scad>
  * @using 1 m3nut
  * @using 2 m3washer
  */
-module ramps_holder(hole_offset=0,endstop_width=10){
+module ramps_holder(hole_offset=0,endstop_width=10,with_foot=false){
 	outer_diameter= m8_diameter+3.3*2;
 	screw_hole_spacing=48.26;
 	opening_size = m8_diameter-1.5; //openingsize
-	
+	foot_height=29;
 	difference()
 	{
 		union()
@@ -32,6 +32,19 @@ module ramps_holder(hole_offset=0,endstop_width=10){
 			cube([15.5,outer_diameter,endstop_width]);
 			translate([-(screw_hole_spacing+8), 0, 0]) 
 			cube([screw_hole_spacing+8+10, 4, endstop_width]);
+
+			if (with_foot)
+			{
+				translate([-screw_hole_spacing+4,-foot_height,0])
+				cube([4, foot_height+1, endstop_width]);
+				translate([-screw_hole_spacing+4+3,-20,0])
+				difference()
+				{
+				cube([21, 21, 4]);
+				translate([21,0,-1])
+				cylinder(r=20,h=6);
+				}
+			}
 
 			for(hole=[-1,1])
 			translate([-4-screw_hole_spacing/2-screw_hole_spacing/2*hole,
@@ -77,7 +90,7 @@ module ramps_holder(hole_offset=0,endstop_width=10){
 
 module rampsholder()
 {
-	ramps_holder(hole_offset=0,endstop_width=10);
+	ramps_holder(hole_offset=0,endstop_width=10,with_foot=true);
 	translate([0,18,0])
 	ramps_holder(hole_offset=6.35,endstop_width=14);
 }

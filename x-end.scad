@@ -149,7 +149,7 @@ module xend_side(closed_end=true,curved_sides=false)
 	}
 }
 
-module xend(endstop_mount=false,closed_end=true,curved_sides=false,override_height=-1)
+module xend(endstop_mount=false,closed_end=true,curved_sides=false,override_height=-1,luu_version=false)
 {
 //	translate([0,9.5,0])bushing(true,13);
 //	translate([0,4.8,0.5])cube(size = [8,2,1],center=true);
@@ -167,7 +167,7 @@ module xend(endstop_mount=false,closed_end=true,curved_sides=false,override_heig
 //			cube([16,30,16],center=true);
 //		}
 //	}
-	z_linear_bearings(luu_version=true,override_height=override_height);
+	z_linear_bearings(luu_version=luu_version,override_height=override_height);
 
 	difference()
 	{
