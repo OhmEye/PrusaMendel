@@ -27,13 +27,15 @@ rod_surround_diameter=20;
 top_rod_position=[29.4,51.05,0];
 rod_centres_gap=sqrt(top_rod_position[0]*top_rod_position[0]+
 				top_rod_position[1]*top_rod_position[1]);
-motor_mount_position=[36,18,0];
-mount_rotation=-8;
+motor_mount_position=[38,18,0];
+mount_rotation=2;
 motor_mount_rotation=[0,0,mount_rotation];
 
 motor_mount1=rotated (-45+mount_rotation)*sqrt(2)*nema17_hole_spacing/2+motor_mount_position;
 motor_mount2=rotated (45+mount_rotation)*sqrt(2)*nema17_hole_spacing/2+motor_mount_position;
 top_offset=motor_mount2-top_rod_position;
+
+//translate([0,0,1])%import_stl("gregs-ybrac-t.stl");
 
 module ybract()
 {
@@ -44,20 +46,20 @@ module ybract()
 		union()
 		{
 			//gap fill.
-			translate([12,10,0])
+			translate([12,7,0])
 #			cylinder(r=10,h=thickness);
 			//gap fill.
-			translate([30,40,0])
+			translate([33,40,0])
 #			cylinder(r=5,h=thickness);
 
 			rotate(atan2(top_rod_position[1],top_rod_position[0]))
 			linear_extrude(height=thickness)
-			barbell (rod_surround_diameter/2,rod_surround_diameter/2,60,80,rod_centres_gap);
+			barbell (rod_surround_diameter/2,rod_surround_diameter/2,52,280,rod_centres_gap);
 		
 			linear_extrude(height=thickness)
 			rotate(atan2(motor_mount1[1],motor_mount1[0]))
 			barbell (rod_surround_diameter/2,
-				nema17_support_d/2,30,35,
+				nema17_support_d/2,30,110,
 				sqrt(motor_mount1[0]*motor_mount1[0]+motor_mount1[1]*motor_mount1[1]));
 			
 			linear_extrude(height=thickness)
@@ -75,7 +77,7 @@ module ybract()
 				linear_extrude(height=(hole>1)?thickness:full_height)
 				translate(-nema17_hole_spacing*[1,1,0]/2)
 				barbell (nema17_support_d/2,
-					nema17_support_d/2,20,60,nema17_hole_spacing);
+					nema17_support_d/2,20,110,nema17_hole_spacing);
 
 //				translate(nema17_hole_spacing*[-1,1,0]/2)
 //				cylinder(r=nema17_support_d/2,h=full_height);

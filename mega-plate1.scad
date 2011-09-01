@@ -35,9 +35,6 @@ mirror ()
 translate([65,0,0])
 rodclamp(); 
 
-*translate([-64,-58,0])
-import_stl ("builders-plate4.stl");
-
 translate([-62,-93,0]) 
 rotate(0)
 vertex(false);

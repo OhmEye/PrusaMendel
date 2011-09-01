@@ -1,7 +1,6 @@
 include <configuration.scad>
 use <bar-clamp.scad>
 use <gregs-ybrac-t.scad>
-//use <pulley_ausxmods.scad>
 use <gregs-endstop-holder.scad> 
 use <ramps-holder.scad>
 
@@ -39,15 +38,7 @@ union ()
 	rotate(180)
 	barclamp();
 
-
-//	translate([36,18,0]) 
-//	ausxmods();
-//
-//	translate([50,60,0]) 
-//	ausxmods();
-
 	ybract();
-
 
 	 for (i=[0:1]) 
 	 translate([58,-18*i-15-4])

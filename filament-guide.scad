@@ -1,16 +1,12 @@
 // PRUSA Mendel  
-// Belt clamp
+// Filament Guide
 // GNU GPL v2
-// Josef Průša
-// josefprusa@me.com
-// prusadjs.cz
-// http://www.reprap.org/wiki/Prusa_Mendel
-// http://github.com/prusajr/PrusaMendel
+// Greg Frost
 
 include <configuration.scad>
 
 /**
- * @name Belt clamp
+ * @name Filament Guide
  * @category Printed
  */ 
 filament_guide();
