@@ -14,7 +14,7 @@ use <teardrop.scad>
 
 axis_diameter_real=4;
 axis_diameter_larger=4.5;
-add_strength=true;
+add_strength=false;
 xend_height=15.8;
 xend_length=40;
 solid_end_width=3;

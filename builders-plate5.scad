@@ -10,7 +10,7 @@ union ()
 	gregs_x_carriage();
 
 	for (i=[-1,1]) 
-	translate([0,i*(13.4),0])
+	translate([0,i*(13.15),0])
 	belt_clamp();
 	
 	belt_clamp_channel();
