@@ -29,8 +29,10 @@ tooth_spacing=5;
 
 belt_clamp_channel_height=belt_thickness+tooth_height+belt_clamp_thickness*2;
 
+echo ("belt_clamp_width+0.75",belt_clamp_width+0.75);
+
 for (i=[-1,1])
-translate([0,i*(belt_clamp_width+1),0])
+translate([0,i*(belt_clamp_width+0.75),0])
 belt_clamp();
 
 belt_clamp_channel();

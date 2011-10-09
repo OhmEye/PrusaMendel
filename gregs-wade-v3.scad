@@ -15,12 +15,13 @@ mendel_parts_v6_mount=16;
 grrf_peek_mount=32;
 wildseyed_mount=64;
 geared_extruder_nozzle=128; // http://reprap.org/wiki/Geared_extruder_nozzle
+jhead_mount=256;
 
 //Set the hotend_mount to the sum of the hotends that you want the extruder to support:
 //e.g. wade(hotend_mount=groovemount+peek_reprapsource_mount);
 
 
-wade(hotend_mount=geared_extruder_nozzle);
+wade(hotend_mount=jhead_mount);
 
 //Place for printing
 //translate([78,-10,15.25])
@@ -207,9 +208,11 @@ module wade (hotend_mount=0)
 			if (in_mask(hotend_mount,grrf_peek_mount))
 				grrf_peek_mount_holes();
 			if (in_mask(hotend_mount,wildseyed_mount))
-				wildseyed_mount_holes();
+				wildseyed_mount_holes(insulator_d=12.7);
 			if (in_mask(hotend_mount,geared_extruder_nozzle))
 				mendel_parts_v6_holes(insulator_d=15);
+			if (in_mask(hotend_mount,jhead_mount))
+				wildseyed_mount_holes(insulator_d=16);
 		}
 	}
 }
@@ -655,10 +658,10 @@ module grrf_peek_mount_holes()
 	cylinder(r=1.5,h=wade_block_depth+2,$fn=10);
 }
 
-//wildseyed_mount_holes();
-module wildseyed_mount_holes()  
+//wildseyed_mount_holes(insulator_d=16);
+module wildseyed_mount_holes(insulator_d=12.7)  
 {  
-	extruder_recess_d=13.4;
+	extruder_recess_d=insulator_d+0.7;
 	extruder_recess_h=10;
 
 	// Recess in base
