@@ -1,7 +1,6 @@
 include <configuration.scad>
 use <x-end-motor.scad>
 use <x-end-idler.scad>
-use <gregs-x-carriage.scad>
 
 
 render()

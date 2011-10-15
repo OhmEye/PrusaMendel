@@ -66,7 +66,7 @@ assign (height=(override_height>0)?override_height:luu_version?luu_height+4+1:65
 
 module ziptie(){
 difference(){
-translate(v=[0,0,0]) cylinder(h = 4.5, r=11);
-translate(v=[0,0,-1]) cylinder(h = 5, r=10-1, $fn=50);
-translate(v=[0,0,3]) cylinder(h = 2, r1=10-1, r2=10.8, $fn=50);
+translate(v=[0,0,0]) cylinder(h = 4.5, r=12.1);
+translate(v=[0,0,-1]) cylinder(h = 5, r=10.1, $fn=50);
+translate(v=[0,0,3]) cylinder(h = 2, r1=10.1, r2=12, $fn=50);
 }}
