@@ -2,20 +2,13 @@ include <configuration.scad>
 use <z-motor-mount.scad>
 use <rod-clamp.scad>
 
+for (i=[-1,1])
+translate([24*i,0,0])
+translate([-5,0,5])
+rotate([0,90,0])
+rodclamp();
 
-union ()
-{
-	translate([93,0,0])
-	rodclamp();
-	
-	translate([-38,0,0]) 
-	rotate(180)
-	rodclamp();
-
-	translate([54,0,8]) 
-	zmotormount();
-
-	translate([0,0,8]) 
-	rotate(180)
-	zmotormount();
-}
+for (i=[-1,1])
+translate([9*i,0,30]) 
+rotate([0,90,0])
+zmotormount();

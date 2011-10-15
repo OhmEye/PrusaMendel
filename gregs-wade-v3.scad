@@ -308,8 +308,8 @@ module block_holes()
 			translate([-13,0,9.5])
 			b608(h=wade_block_depth);
 		
-			translate([0,0,8+layer_height])
-			cylinder(r=m8_clearance_hole/2,h=wade_block_depth-(8+layer_height)+2);	
+			translate([0,0,8+layer_thickness])
+			cylinder(r=m8_clearance_hole/2,h=wade_block_depth-(8+layer_thickness)+2);	
 
 			// Filament feed.
 			translate([-filament_feed_hole_offset,0,wade_block_depth/2])
@@ -377,7 +377,7 @@ module motor_mount_holes()
 	slot_right=2;
 
 	{
-		translate([0,0,screw_head_recess_depth+layer_height])
+		translate([0,0,screw_head_recess_depth+layer_thickness])
 		for (hole=[0:2])
 		{
 			translate([motor_hole(hole)[0]-slot_left,motor_hole(hole)[1],0])

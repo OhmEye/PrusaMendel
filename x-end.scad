@@ -261,4 +261,4 @@ module xendcorners(dia1, dia2, dia3, dia4, height=0)
 }
 //xendcorners(5,5,5,5,0);
 
-xend(endstop_mount=false,closed_end=false,curved_sides=false,override_height=65);
+xend(endstop_mount=false,closed_end=true,curved_sides=true,override_height=65,luu_version=true);

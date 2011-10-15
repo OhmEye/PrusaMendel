@@ -2,7 +2,6 @@ include <configuration.scad>
 use <gregs-wade-v3.scad>
 use <gregs-wadebits.scad>
 
-
 union ()
 {
 	wade(hotend_mount=2);

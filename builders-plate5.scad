@@ -3,7 +3,6 @@ use <gregs-x-carriage.scad>
 use <gregs-new-coupling.scad>
 use <gregs-y-axis-holder.scad>
 
-
 union ()
 {
 	rotate(180)
@@ -30,9 +29,4 @@ union ()
 
 	translate([55,0,0])
 	coupling_cup ();
-
-//	translate([i*35-15,-58+i*10,0])
-//	coupling(); 
-//	translate([30,0,0])
-//	coupling_cup ();
 }

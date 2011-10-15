@@ -1,7 +1,7 @@
 Format is tab separated skeinforge settings.
 _Name                          	Value
-WindowPosition	293+9
-Open File for Skeinforge	C:/Users/Greg/Desktop/reprap/GregPrusaMendel/gregs-wade-v3-body-jhead.stl
+WindowPosition	149+9
+Open File for Skeinforge	C:/Users/Greg/Desktop/reprap/GregPrusaMendel/backlash-calibration.stl
 analyze	False
 craft	True
 help	False
