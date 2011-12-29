@@ -20,11 +20,10 @@ jhead_mount=256;
 //Set the hotend_mount to the sum of the hotends that you want the extruder to support:
 //e.g. wade(hotend_mount=groovemount+peek_reprapsource_mount);
 
-
-wade(hotend_mount=jhead_mount);
+wade(hotend_mount=groovemount,legacy_mount=true);
 
 //Place for printing
-//translate([78,-10,15.25])
+//translate([78,-10,15.25]
 //rotate([0,-90,0])
 
 //Place for assembly.
@@ -98,7 +97,7 @@ idler_long_top=idler_mounting_hole_up+idler_mounting_hole_diameter/2+idler_mount
 idler_long_bottom=idler_fulcrum_offset;
 idler_long_side=idler_long_top+idler_long_bottom;
 
-module wade (hotend_mount=0)
+module wade (hotend_mount=0,legacy_mount=true)
 {
 	difference ()
 	{
@@ -188,7 +187,7 @@ module wade (hotend_mount=0)
 			motor_mount ();
 		}
 
-		block_holes();
+		block_holes(legacy_mount=legacy_mount);
 		motor_mount_holes ();
 
 		translate([motor_mount_translation[0]-gear_separation-filament_feed_hole_offset,
@@ -219,7 +218,7 @@ module wade (hotend_mount=0)
 
 function in_mask(mask,value)=(mask%(value*2))>(value-1); 
 
-module block_holes()
+module block_holes(legacy_mount=false)
 {
 	//Round off the top of the block. 
 	translate([0,wade_block_height-block_bevel_r,-1])
@@ -318,6 +317,7 @@ module block_holes()
 			cylinder(r=filament_feed_hole_d/2,h=wade_block_depth*3,center=true,$fn=8);	
 
 			// Mounting holes on the base.
+			translate(legacy_mount?[-3.4,0,-1]:[0,0,0])
 			for (mount=[0:1])
 			{
 				translate([-filament_feed_hole_offset+25*((mount<1)?1:-1),

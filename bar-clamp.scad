@@ -9,6 +9,7 @@
 // http://github.com/prusajr/PrusaMendel
 
 include <configuration.scad>
+use <teardrop.scad>
 
 /**
  * @name Bar clamp
@@ -32,7 +33,15 @@ module barclamp()
 			cylinder(h=outer_radius*2,r=outer_radius, $fn = 20);
 
 			translate([outer_radius, 0, 0])
-			cube([clamp_length,outer_radius*2,clamp_height]);
+			cube([clamp_length-outer_radius,outer_radius*2,clamp_height]);
+
+			rotate(90)
+			translate([0,-18,outer_radius])
+			{
+			teardrop(r=outer_radius,h=clamp_height);
+			rotate([180,0,0])
+			teardrop(r=outer_radius,h=clamp_height);
+			}
 		}
 	
 		translate([outer_radius,outer_radius-slot_width/2,-1])
@@ -42,7 +51,7 @@ module barclamp()
 		#cylinder(h=clamp_height+2,r=m8_diameter/2,$fn=18);
 
 		translate([17,outer_radius*2+1,outer_radius]) rotate([90,0,0]) 
-		#cylinder(h=outer_radius*2+2,r=m8_diameter/2,$fn=10);
+		#cylinder(h=outer_radius*2+2,r=m8_diameter/2,$fn=20);
 	}
 }
 

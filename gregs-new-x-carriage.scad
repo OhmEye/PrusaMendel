@@ -49,6 +49,9 @@ belt_clamp_channel();
 
 gregs_x_carriage();
 
+translate([0,17,0])
+ram();
+
 module gregs_x_carriage(with_fanmount=true) 
 {
 	difference()
@@ -199,7 +202,6 @@ module belt_clamp_socket()
 			translate([belt_clamp_hole_separation/2,0,0])
 			cylinder(r=belt_clamp_width/2,h=belt_clamp_height,center=true);
 		}
-		belt_clamp_holes();
 	}
 }
 
@@ -290,12 +292,20 @@ module belt_clamp(version)
 			cube([key_w-0.5,key_l-0.5,belt_clamp_clamp_height+key_d+belt_allowance],
 				true);
 			
+			if(version==1)
+			translate([belt_clamp_hole_separation/2,0,-belt_clamp_clamp_height/2])
+			difference()
+			{
+				cylinder(r=belt_clamp_width/2,h=belt_clamp_clamp_height+belt_thickness);
+				translate([-belt_clamp_width-1,-belt_clamp_width/2-1,-1])
+				cube([belt_clamp_width+2,belt_clamp_width+2,belt_clamp_clamp_height+belt_thickness+2]);
+			}			
 		}
 
 		
 		translate([belt_clamp_hole_separation/2,0,-1])
 		rotate(360/16)
-		cylinder(r=m3_diameter/2,h=belt_clamp_clamp_height+2,$fn=8);
+		cylinder(r=m3_diameter/2,h=belt_clamp_clamp_height+belt_thickness+2,$fn=8);
 
 		if(version==1)
 		{
@@ -427,3 +437,33 @@ sqrt((point1[0]-point2[0])*(point1[0]-point2[0])+
 function angle(a,b,c) = acos((a*a+b*b-c*c)/(2*a*b)); 
 
 function rotated(a)=[cos(a),sin(a),0];
+
+ram_height=belt_width;
+ram_length=1.5;
+ram_lip=1.5;
+
+module ram() 
+{ 
+	ram_radius=(belt_clamp_height-tooth_height)/2;
+	difference()
+	{
+		union()
+		{
+			cylinder(r1=ram_radius+ram_lip,r2=ram_radius-ram_lip,h=2*ram_lip,$fn=32);
+
+			translate([0,0,ram_height])
+			cylinder(r1=ram_radius-ram_lip,r2=ram_radius+ram_lip,h=2*ram_lip,$fn=32);
+
+			translate([0,0,ram_lip])
+			cylinder(r=ram_radius,h=ram_height,$fn=32);
+			translate([0,-m3_nut_diameter/2,0])
+			cube([ram_length+0.1,m3_nut_diameter,ram_height+2*ram_lip]);
+		}
+		translate([ram_length,-(ram_radius+ram_lip+1),-1])
+		cube([ram_radius*2+2*ram_lip+2,ram_radius*2+2*ram_lip+2,ram_height+2+2*ram_lip]);
+		translate([-0.5,0,ram_height/2+ram_lip])
+		rotate([0,90,0])
+		rotate([0,0,180/8])
+		cylinder(r=m3_diameter/2,h=2+ram_length,$fn=8);
+	}
+}
