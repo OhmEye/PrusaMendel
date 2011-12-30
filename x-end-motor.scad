@@ -24,9 +24,9 @@ corection = 1.17;
 
 use <x-end.scad>
 
-xendmotor(endstop_mount=true,curved_sides=false,closed_end=true,luu_version=false);
+xendmotor(endstop_mount=true,curved_sides=true,closed_end=true,luu_version=false,adjustable_z_stop=true);
 
-module xendmotor(endstop_mount=false,curved_sides=false,closed_end=true,luu_version=false)
+module xendmotor(endstop_mount=false,curved_sides=false,closed_end=true,luu_version=false,adjustable_z_stop=true)
 {
 	difference ()
 	{
@@ -40,6 +40,9 @@ module xendmotor(endstop_mount=false,curved_sides=false,closed_end=true,luu_vers
 //			import_stl("x-end.stl");
 		
 			positioned_motor_mount();
+
+			if (adjustable_z_stop)
+			  z_stop();
 		}
 		positioned_motor_mount_holes();
 		xendcorners(5,0,5,5,0);
@@ -57,6 +60,53 @@ motor_mount_translation=[44-thickness,8,23.5-4.7-12+24.5];
 top_corner=motor_mount_translation+[thickness,nema17_width/2,nema17_width/2];
 bridge_length=top_corner[0]-9;
 bridge_shear=0.48;
+
+module z_stop()
+{
+	z_stop_width=10;
+	z_stop_height=1.8;
+
+	translate([-20,motor_mount_translation[1]+(nema17_width)/2-z_stop_width,0])
+	{
+		translate([z_stop_width/2,0,0])
+		cube([50-z_stop_width/2,z_stop_width,z_stop_height]);
+
+		translate([z_stop_width/2,z_stop_width/2,0])
+		difference()
+		{
+			cylinder(r=z_stop_width/2,h=z_stop_height*2,$fn=32);
+			translate([0,0,z_stop_height])
+			cylinder(r=m3_diameter/2,h=z_stop_height*2,$fn=32);
+		}
+
+		difference()
+		{
+			union()
+			{
+				translate([0,-5,8])
+				cube([8.75,z_stop_width/2+5,15.8-8]);
+				translate([8.75/2,5,2*z_stop_height+0.8])
+				cylinder(r=m3_nut_diameter/2+1.28,h=15.8-2*z_stop_height-0.8-7.8-0.8,$fn=6);
+				translate([8.75/2,5,0])
+				cylinder(r=m3_nut_diameter/2+0.3*2.1,h=15.8-1,$fn=6);
+				translate([8.75/2,5,8])
+				cylinder(r=m3_nut_diameter/2+1.28,h=7.8,$fn=6);
+			}
+	
+			translate([8.75/2,5,0])
+			cylinder(r=m3_diameter/2,h=8,$fn=16);
+
+			translate([8.75/2,5,8+2+0.4])
+			cylinder(r=m3_diameter/2,h=10,$fn=16);
+	
+			translate([8.75/2,5,z_stop_height])
+			cylinder(r=m3_nut_diameter/2,h=8+2-z_stop_height,$fn=6);
+	
+			translate([8.75/2,5,15.8-2])
+			cylinder(r=m3_nut_diameter/2,h=3,$fn=6);
+		}
+	}
+}
 
 module positioned_motor_mount()
 {

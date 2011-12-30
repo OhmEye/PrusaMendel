@@ -27,19 +27,25 @@ bushing_support_width=17;
 rod_support_width=10;
 pad_groove_depth=0.7;
 
-module xend_side(closed_end=true,curved_sides=false)
+module xend_side(closed_end=true,curved_sides=false,endstop_mount=false)
 {
+//	translate([25,0,0])
+//	difference()
+//	{
+//		endstop_mount();
+//		endstop_holes();
+//	}
+
 	translate([25,0,0])
+	render()
 	difference ()
 	{
 		union()
 		{
 			if (curved_sides)
 			{
-				for (i=[0:1])
 				rotate(90) 
-				rotate([180*i,0,0])
-				teardrop(r=xend_height/2,h=xend_length);
+				teardrop(r=xend_height/2,h=xend_length,top_and_bottom=true);
 			}
 			else
 			{
@@ -67,43 +73,46 @@ module xend_side(closed_end=true,curved_sides=false)
 
 			translate([-26,0,-xend_height/2])
 			cube([26,rod_support_width,xend_height]);
+
+			if (endstop_mount)
+				endstop_mount();
 		}
 
+		render();
 		difference ()
 		{
 			union ()
 			{
-			translate([0,-1,0])
-			rotate(90)
-			teardropcentering(
-				axis_diameter_larger,
-				closed_end?xend_length-solid_end_width+1:xend_length+2);
-
-			translate([axis_diameter_larger,0,0])
-			rotate([0,8,0])
-			translate([-axis_diameter_larger,solid_end_width,-xend_height/2-1])
-			cube([axis_diameter_larger,
-				xend_length-2*solid_end_width,
-				xend_height/2+1]);
-
-			translate([-axis_diameter_larger,0,0])
-			rotate([0,-8,0])
-			translate([0,solid_end_width,-xend_height/2-1])
-			cube([axis_diameter_larger,
-				xend_length-2*solid_end_width,
-				xend_height/2+1]);
-
-			if (closed_end)
-			{
-				translate([0,xend_length-solid_end_width+1.5,0])
-				rotate([90,0,0])
-				cylinder(r=m3_nut_diameter/2, h=3,$fn=6);
-
-				translate([0,xend_length+1,0])
-				rotate([90,0,0])
-				cylinder(r=m3_diameter/2-0.2, h=solid_end_width+2,$fn=6);
-			}
-
+				translate([0,-1,0])
+				rotate(90)
+				teardropcentering(
+					axis_diameter_larger,
+					closed_end?xend_length-solid_end_width+1:xend_length+2);
+	
+				translate([axis_diameter_larger,0,0])
+				rotate([0,8,0])
+				translate([-axis_diameter_larger,solid_end_width,-xend_height/2-1])
+				cube([axis_diameter_larger,
+					xend_length-2*solid_end_width,
+					xend_height/2+1]);
+	
+				translate([-axis_diameter_larger,0,0])
+				rotate([0,-8,0])
+				translate([0,solid_end_width,-xend_height/2-1])
+				cube([axis_diameter_larger,
+					xend_length-2*solid_end_width,
+					xend_height/2+1]);
+	
+				if (closed_end)
+				{
+					translate([0,xend_length-solid_end_width+1.5,0])
+					rotate([90,0,0])
+					cylinder(r=m3_nut_diameter/2, h=3,$fn=6);
+	
+					translate([0,xend_length+1,0])
+					rotate([90,0,0])
+					cylinder(r=m3_diameter/2-0.2, h=solid_end_width+2,$fn=6);
+				}	
 			}
 
 			translate([-axis_diameter_larger-1,solid_end_width+slot_width,-xend_height/2])
@@ -129,6 +138,9 @@ module xend_side(closed_end=true,curved_sides=false)
 				cube([slot_width,xend_length-2*solid_end_width,xend_height/2+1]);
 			}
 		}
+
+		if (endstop_mount)
+			endstop_holes();
 
 		if (add_strength)
 		{
@@ -177,7 +189,8 @@ module xend(endstop_mount=false,closed_end=true,curved_sides=false,override_heig
 			{
 				xend_side(closed_end=closed_end,curved_sides=curved_sides);
 				mirror([1,0,0]) 
-				xend_side(closed_end=closed_end,curved_sides=curved_sides);
+				xend_side(closed_end=closed_end,curved_sides=curved_sides,
+					endstop_mount=endstop_mount);
 			}	
 
 			// Slider.
@@ -187,17 +200,6 @@ module xend(endstop_mount=false,closed_end=true,curved_sides=false,override_heig
 			//Nut Trap
 			translate([0,-20,0]) 
 			cylinder(h=40,r=m8_nut_diameter/2+thin_wall*corection,$fn=6);
-
-			if (endstop_mount)
-			difference ()
-			{
-				endstop_mount();
-				translate([-25,-1-25,xend_height/2])
-				rotate(90)
-				teardropcentering(
-					axis_diameter_larger+1,
-					closed_end?xend_length-solid_end_width+1:xend_length+2);
-			}
 		}
 
 		// Slider cutout. 
@@ -217,31 +219,36 @@ module xend(endstop_mount=false,closed_end=true,curved_sides=false,override_heig
 	}
 }
 
-endstop_thickness=4; 
-endstop_w=10;
-endstop_l=14;
-endstop_h=10;
+endstop_thickness=3; 
+endstop_w=14;
+endstop_l=18;
+endstop_h=18;
 
 module endstop_mount()
 {
 	// Endstop mount 
-	color([0,0,1])
-	translate([-25-xend_height/2-2,-25,xend_height/2])
-	difference()
+	translate([-endstop_w+xend_height/2,0,0])
+	cube([endstop_w,endstop_l,endstop_h]);
+}
+
+module endstop_holes()
+{
+	translate([-endstop_w+xend_height/2,0,0])
+	translate([endstop_thickness,-1,1.2*m8_diameter/2+0.4])
+	cube([endstop_w-endstop_thickness+1,endstop_l-endstop_thickness+1,endstop_h]);
+	
+	for(i=[0:1])
 	{
-		translate([2,0,0])
-#		cube([endstop_w+endstop_thickness-2,
-		endstop_l+endstop_thickness,
-		endstop_h+endstop_thickness+xend_height/2]);
-		translate([-1,-1,endstop_thickness+xend_height/2])
-		cube([endstop_w+1,endstop_l+1,endstop_h+1]);
-		
-		translate([endstop_w-1,endstop_l-1-m3_diameter/2,m3_diameter/2+1+endstop_thickness+xend_height/2])
+		translate([0,-2.8,2.8])
+		translate((i==0)?
+			[0,0,0]:
+			[0,-10.3,22.2])
+		translate([-endstop_w+xend_height/2-1,endstop_l-endstop_thickness,1.2*m8_diameter/2+0.4])
 		rotate([0,90,0])
-		rotate(360/16)
 		{
+			rotate(180/8)
 			cylinder(r=m3_diameter/2,h=endstop_thickness+2,$fn=8);
-			translate([0,0,endstop_thickness+2-3])
+			rotate(180/6)
 			cylinder(r=m3_nut_diameter/2,h=3,$fn=6);
 		}
 	}
@@ -261,4 +268,4 @@ module xendcorners(dia1, dia2, dia3, dia4, height=0)
 }
 //xendcorners(5,5,5,5,0);
 
-xend(endstop_mount=false,closed_end=true,curved_sides=true,override_height=65,luu_version=true);
+xend(endstop_mount=true,closed_end=true,curved_sides=true,override_height=65,luu_version=true);

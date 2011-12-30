@@ -1,6 +1,6 @@
 teardrop();
 
-module teardrop (r=4.5,h=20)
+module teardrop (r=4.5,h=20,top_and_bottom=false)
 {
 	rotate([-270,0,90])
 	linear_extrude(height=h)
@@ -8,6 +8,10 @@ module teardrop (r=4.5,h=20)
 		circle(r=r, $fn = 24);
 		polygon(points=[[0,0],[r*cos(30),r*sin(30)],[0.5*r,r],[-0.5*r,r],[-r*cos(30),r*sin(30)]],
 				paths=[[0,1,2,3,4]]);
+		if (top_and_bottom)
+		polygon(points=[[0,0],[r*cos(30),-r*sin(30)],[0.5*r,-r],[-0.5*r,-r],[-r*cos(30),-r*sin(30)]],
+				paths=[[0,1,2,3,4]]);
+		
 	}
 }
 

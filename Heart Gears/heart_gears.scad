@@ -14,7 +14,7 @@ coded_colors=[
 [1,1,1,1],				// 8 white
 [0.5,0.5,0.5,1],			// 9 grey
 [1,0.5,0.75,1],			// 10 pink
-[0.5,0.5.0,1]			// 11 khaki
+[0.5,0.5,1]			// 11 khaki
 ];
 
 // Define the parameters for the two types of gears to use.
@@ -59,13 +59,15 @@ bearing_depth=17;
 bearing_id = 05;
 bearing_od = 10;
 
+gear_support_gap=2;
+
 //===========================================================
 
 // first create heart.stl.
 //translate ([0,0,15])
 //heart (width=heart_width);
 
-gear_num=1; // 0 for all gears.
+gear_num=0; // 0 for all gears.
 gear_mask= (gear_num==0) ? 4095 : pow(2,gear_num-1);
 
 // This intersects the gear cluster with the heart stl created above.
@@ -80,6 +82,7 @@ gear_mask= (gear_num==0) ? 4095 : pow(2,gear_num-1);
 // Use it to aid with assembly.
 //pretty_gears();
 
+//gear_lineup();
 
 // For assembly, each of the gears is split into two parts.
 // The inner part screws into the mount. 
@@ -118,73 +121,80 @@ gear_mask= (gear_num==0) ? 4095 : pow(2,gear_num-1);
 
 module repositioned_gear ()
 {
-			rotate ([180,0,0])
+	rotate ([180,0,0])
 //	translate ([0,0,gear_bottom_apex_height])
-	if (gear_num == 1)
+	difference()
 	{
-		rotate ([180,0,0])
-		intersected_gears ();
-	}
-	else if (gear_num == 2)
-	{
-		rotate([0,0,-360/15*0.5])
-		rotate([0,big_gear_rotate,0])
-		rotate ([0,-180,0])
-		rotate ([0,0,-280])
-		intersected_gears ();
-	}
-	else if (gear_num == 3)
-	{
-		rotate([0,0,-360/15*0.5])
-		rotate([0,big_gear_rotate,0])
-		rotate([0,0,-360*2/5])
-		rotate ([0,-180,0])
-		rotate ([0,0,-280])
-		intersected_gears ();
-	}
-	else if (gear_num >= 4 && gear_num <= 8)
-	{
-		rotate([0,-(pitch_angle1+pitch_angle2),0])
-		rotate([0,0,-360/5*(gear_num-4)])
-		rotate ([0,-180,0])
-		rotate ([0,0,-280])
-		intersected_gears ();
-	}
-	else if (gear_num == 9)
-	{
-		rotate([0,-180,0])
-		rotate ([0,-180,0])
-		rotate ([0,0,-280])
-		intersected_gears ();
-	}
-	else if (gear_num == 10)
-	{
-		rotate([0,-(180-small_gear_rotate),0])
-		rotate([0,0,-360/10*7])
-		rotate ([0,-180,0])
-		rotate ([0,0,-280])
-		intersected_gears ();
-	}
-	else if (gear_num == 11)
-	{
-		rotate([0,-(180-small_gear_rotate),0])
-		rotate([0,0,-360/10*3])
-		rotate ([0,-180,0])
-		rotate ([0,0,-280])
-		intersected_gears ();
-	}
-	else if (gear_num == 12)
-	{
-		rotate([0,-(180-small_gear_rotate),0])
-		rotate([0,0,-360/10*1])
-		rotate ([0,-180,0])
-		rotate ([0,0,-280])
-		intersected_gears ();
-	}
-	else
-	{
-		intersected_gears ();
-	}
+		if (gear_num == 1)
+		{
+			rotate ([180,0,0])
+			intersected_gears ();
+		}
+		else if (gear_num == 2)
+		{
+			rotate([0,0,-360/15*0.5])
+			rotate([0,big_gear_rotate,0])
+			rotate ([0,-180,0])
+			rotate ([0,0,-280])
+			intersected_gears ();
+		}
+		else if (gear_num == 3)
+		{
+			rotate([0,0,-360/15*0.5])
+			rotate([0,big_gear_rotate,0])
+			rotate([0,0,-360*2/5])
+			rotate ([0,-180,0])
+			rotate ([0,0,-280])
+			intersected_gears ();
+		}
+		else if (gear_num >= 4 && gear_num <= 8)
+		{
+			rotate([0,-(pitch_angle1+pitch_angle2),0])
+			rotate([0,0,-360/5*(gear_num-4)])
+			rotate ([0,-180,0])
+			rotate ([0,0,-280])
+			intersected_gears ();
+		}
+		else if (gear_num == 9)
+		{
+			rotate([0,-180,0])
+			rotate ([0,-180,0])
+			rotate ([0,0,-280])
+			intersected_gears ();
+		}
+		else if (gear_num == 10)
+		{
+			rotate([0,-(180-small_gear_rotate),0])
+			rotate([0,0,-360/10*7])
+			rotate ([0,-180,0])
+			rotate ([0,0,-280])
+			intersected_gears ();
+		}
+		else if (gear_num == 11)
+		{
+			rotate([0,-(180-small_gear_rotate),0])
+			rotate([0,0,-360/10*3])
+			rotate ([0,-180,0])
+			rotate ([0,0,-280])
+			intersected_gears ();
+		}
+		else if (gear_num == 12)
+		{
+			rotate([0,-(180-small_gear_rotate),0])
+			rotate([0,0,-360/10*1])
+			rotate ([0,-180,0])
+			rotate ([0,0,-280])
+			intersected_gears ();
+		}
+		else
+		{
+			intersected_gears ();
+		}
+		
+		rotate([180,0,0])
+		translate([-150,-150,-1])
+		cube([300,300,cluster_support_radius+gear_support_gap+1]);
+	}	
 }
 
 module intersected_gears (use_stl=false)
@@ -194,7 +204,10 @@ module intersected_gears (use_stl=false)
 		rotate ([0,0,280])
 		rotate ([0,180,0])
 		bevel_gear_cluster (use_stl=use_stl);
-		import_stl("heart.stl");
+		translate([0,0,-38])
+		scale([2,2.2,2])
+		import_stl("heart2.stl");
+*		import_stl("heart.stl");
 	}
 }
 
@@ -431,6 +444,36 @@ module bevel_gear_cluster (use_stl=false)
 	}
 }
 
+module gear_lineup ()
+{
+	translate([0,0,0])
+	import_stl("gear1.stl");
+	translate([100,0,0])
+	import_stl("gear2.stl");
+	translate([200,0,0])
+	import_stl("gear3.stl");
+	translate([300,0,0])
+	import_stl("gear4.stl");
+	translate([400,0,0])
+	import_stl("gear5.stl");
+	translate([500,0,0])
+	import_stl("gear6.stl");
+	translate([600,0,0])
+	import_stl("gear7.stl");
+	translate([700,0,0])
+	import_stl("gear8.stl");
+	translate([800,0,0])
+	{
+	import_stl("gear9.stl");
+	cylinder(r=20,h=120);
+	}
+	translate([900,0,0])
+	import_stl("gear10.stl");
+	translate([1000,0,0])
+	import_stl("gear11.stl");
+	translate([1100,0,0])
+	import_stl("gear12.stl");
+}
 sphere_r=18;
 clearance=0.5;
 gear_height=27;
@@ -692,185 +735,26 @@ module 10tooth_inner ()
 function in_mask (mask,bit) = (mask % pow(2,bit)) > (pow(2,bit-1)-1);
 
 cluster_support_radius=17;
-bearing_depth=1.5;
-bearing_rear_clearance=3;
-bearing_height=4;
-side_bearing_centre_z=(cluster_support_radius-bearing_depth-bearing_height/2)*cos(pitch_angle1+pitch_angle2);
-bearing_clearance=0.25;
-bearing_radius=5;
+bushing_hole_r=3.4/2;
+bushing_depth=8;
+rod_hole_r=3/16*25.4/2*0.9;
+equator_offset=2.7;
 
-nut_slot_height=2.2;
-nut_slot_width=6.25;
-nut_head_radius=2.7;
+m3_nut_diameter=5.6/cos(30);
+m3_nut_depth=2;
+m3_head_diameter=5.8;
 
-module bevel_gear_cluster_support (part=1) //1=top 2=middle 3=bottom
-{
-	difference ()
-	{
-		if (part==1)
-		{
-			difference ()
-			{
-				intersection ()
-				{
-					import_stl ("bevel_gear_cluster_struts.stl");
-					translate([-cluster_support_radius*2,-cluster_support_radius*2,+side_bearing_centre_z])
-					cube([cluster_support_radius*4,cluster_support_radius*4,side_bearing_centre_z*3]);
-				}	
-				cylinder(r=5.75,h=cluster_support_radius-bearing_depth-bearing_height-bearing_clearance);
-			}
-		}
-		else if (part==2)
-		{
-			difference()
-			{
-				intersection ()
-				{
-					import_stl ("bevel_gear_cluster_struts.stl");
-					union ()
-					{
-						translate([-cluster_support_radius*2,-cluster_support_radius*2,-side_bearing_centre_z])
-						cube([cluster_support_radius*4,cluster_support_radius*4,side_bearing_centre_z*2]);
-						cylinder(r=5.5,h=cluster_support_radius-bearing_depth-bearing_height-bearing_clearance);	
-					}
-				}
-				translate([0,0,-cluster_support_radius*2])
-				cylinder(r=2,h=cluster_support_radius*4,$fn=20);
-			}
-		}
-		else if (part==3)
-		{
-			intersection ()
-			{
-				import_stl ("bevel_gear_cluster_struts.stl");
-				translate([-cluster_support_radius*2,-cluster_support_radius*2,-side_bearing_centre_z*3])
-				cube([cluster_support_radius*4,cluster_support_radius*4,side_bearing_centre_z*2]);
-			}
-		}
+washer_d=7;
+washer_thickness=0.4;
 
-		translate([0,0,-cluster_support_radius*2])
-		cylinder(r=2,h=cluster_support_radius*4,$fn=20);
-
-		for (j=[0:1]) rotate ([0,180*j,0])
-		for (i=[0:4])
-		{
-			rotate([0,0,360/5*i])
-			translate([-14,0,0])
-			{
-				translate([0,0,0])
-				cylinder(r=1.625,h=3,$fn=15);
-	
-				translate([0,0,2.5+nut_slot_height/2+0.5])
-				cylinder(r=1.625,h=40,$fn=15);
-	
-				translate([0,0,9])
-				{
-					cylinder(r=nut_head_radius,h=10,$fn=15);
-					translate([-10,-nut_head_radius,0])
-					cube([10,nut_head_radius*2,10]);
-				}
-				translate([0,0,2.5])
-				{
-					translate([-15/2,0,0])
-					cube([15,nut_slot_width,2.2],center=true);
-		
-					translate([-15-5,-nut_slot_width/2,0])
-					cube([15,nut_slot_width,10]);
-		
-					translate([0,0,-nut_slot_height/2])
-					cylinder(r=nut_slot_width/2/cos(30),$fn=6,h=nut_slot_height);
-				}
-			}
-		}
-	}
-}
-
-//bevel_gear_cluster_struts ();
-
-module bevel_gear_cluster_struts ()
-{
-	difference ()
-	{
-		intersection ()
-		{
-			strut(hole=false);
-		
-			rotate([0,-big_gear_rotate,0])
-			strut();
-		
-			rotate([0,0,360*2/5])
-			rotate([0,-big_gear_rotate,0])
-			strut();
-		
-			rotate([0,0,360/5*0])
-			rotate([0,(pitch_angle1+pitch_angle2),0])
-			strut();
-			rotate([0,0,360/5*1])
-			rotate([0,(pitch_angle1+pitch_angle2),0])
-			strut();
-			rotate([0,0,360/5*2])
-			rotate([0,(pitch_angle1+pitch_angle2),0])
-			strut();
-			rotate([0,0,360/5*3])
-			rotate([0,(pitch_angle1+pitch_angle2),0])
-			strut();
-			rotate([0,0,360/5*4])
-			rotate([0,(pitch_angle1+pitch_angle2),0])
-			strut();
-	
-			rotate([0,180,0])
-			strut(nut=false);
-		
-			rotate([0,0,360/10*7])
-			rotate([0,180-small_gear_rotate,0])
-			strut();
-		
-			rotate([0,0,360/10*3])
-			rotate([0,180-small_gear_rotate,0])
-			strut();
-		
-			rotate([0,0,360/10*1])
-			rotate([0,180-small_gear_rotate,0])
-			strut();
-		}
-	}
-}
-
-
-//strut();
-module strut(hole=true)
-{
-	rod_r=3/16*25.4/2;
-	big=50;
-
-	difference ()
-	{
-		translate([0,0,big/2-cluster_support_radius])
-%		cube ([big,big,big],center=true);
-
-		if (hole)
-		{
-			translate([0,0,-cluster_support_radius+bearing_depth-bearing_clearance])
-			cylinder ($fn=20,r=bearing_radius+bearing_clearance,h=bearing_height+bearing_clearance*2);
-		
-			translate([0,0,-cluster_support_radius-bearing_depth])
-			cylinder ($fn=20,r=4.5,h=bearing_height+2*bearing_depth+bearing_rear_clearance);
-		}
-	}
-}
-
+bevel_gear_cluster_struts2 (top=true);
+translate([cluster_support_radius*2.4,0,0])
+rotate([0,0,180])
 bevel_gear_cluster_struts2 (top=false);
-//translate([cluster_support_radius*2.4,0,0])
-//rotate([0,0,180])
-//bevel_gear_cluster_struts2 (top=false);
 
-module bevel_gear_cluster_struts2 (top=true)
+module bevel_gear_cluster_struts2 (top=false)
 {
-	bushing_hole_r=2.5/2;
-	bushing_depth=7;
-	rod_hole_r=3/16*25.4/2*0.9;
-	equator_offset=2.5;
-
+	translate([0,0,top?equator_offset:-equator_offset])
 	rotate([0,top?0:180,0])
 	intersection ()
 	{
@@ -883,17 +767,38 @@ module bevel_gear_cluster_struts2 (top=true)
 				rotate([0,axis_angle-90,0])
 				difference ()
 				{
-					dodecahedron (height=2*cluster_support_radius);
-					dodecahedron (height=2*(cluster_support_radius-bushing_depth));
-//					import_stl("hollow_dodecahedron.stl");
-
+//					hollow_dodecahedron();
+					import_stl("hollow_dodecahedron.stl");
 					cylinder ($fn=16,r=bushing_hole_r,h=2*cluster_support_radius+2,center=true);
+					for(i=[0:1])
+					rotate([180*i,0,0])
+					translate([0,0,cluster_support_radius-bushing_depth+m3_nut_depth])
+					rotate([180,0,0])
+					cylinder ($fn=6,r=m3_nut_diameter/2,h=m3_nut_depth+0.5);
+
+					for(i=[0:1])
+					rotate([180*i,0,0])
+					translate([0,0,cluster_support_radius-washer_thickness])
+					cylinder ($fn=32,r=washer_d/2,h=washer_thickness+0.5);
 	
 					for (side=[0:4])
 					{
 						rotate ([0,0,360/5*side])
 						rotate([0,axis_angle,0])
+						{
 						cylinder ($fn=16,r=bushing_hole_r,h=2*cluster_support_radius+2,center=true);
+
+						for(i=[0:1])
+						rotate([180*i,0,0])
+						translate([0,0,cluster_support_radius-bushing_depth+m3_nut_depth])
+						rotate([180,0,0])
+						cylinder ($fn=6,r=m3_nut_diameter/2,h=m3_nut_depth+0.5);
+
+						for(i=[0:1])
+						rotate([180*i,0,0])
+						translate([0,0,cluster_support_radius-washer_thickness])
+						cylinder ($fn=32,r=washer_d/2,h=washer_thickness+0.5);
+						}
 					}
 				}	
 
@@ -902,45 +807,45 @@ module bevel_gear_cluster_struts2 (top=true)
 				rotate ([0,0,180*hole])
 				translate([0,cluster_support_radius*0.9,0])
 				{
-					cylinder($fn=16,r=3/2,h=2.1*cluster_support_radius,center=true);
+					cylinder($fn=16,r=3.4/2,h=2.1*cluster_support_radius,center=true);
 
 					translate([0,0,-equator_offset])
-					for (shoulder=[0:1])
 					{
-						rotate([0,180*shoulder,0])
-						translate([0,0,cluster_support_radius*0.3])
-						cylinder($fn=16,r=7/2,h=2.1*cluster_support_radius);
+						rotate([0,180,0])
+						translate([0,0,3])
+						rotate(180/6)
+						cylinder($fn=6,r=m3_nut_diameter/2,h=cluster_support_radius);
+						translate([0,0,3])
+						cylinder($fn=16,r=m3_head_diameter/2,h=cluster_support_radius);
 					}
 				}
 				}
 
-//				for (hole=[0:5])
-//				{
-//				rotate ([0,0,360/5*hole])
-//				translate([-cluster_support_radius*0.9,0,0])
-//				cylinder($fn=16,r=3/2,h=2*cluster_support_radius+2+100,center=true);
-//				}
-//	
-//				for (hole=[0:5])
-//				{
-//				rotate ([0,0,360/5*hole])
-//				translate([-cluster_support_radius*0.9,0,cluster_support_radius*0.4])
-//				cylinder($fn=6,r=5.3/cos(30)/2,h=2*cluster_support_radius+2+100);
-//				}
-//
-//				if (!top)
-//				{
-//					translate([0,0,cluster_support_radius-5])
-//					cylinder($fn=6,r=7.7/cos(30)/2,h=5+1);
-//				}
 			}
-//			translate([0,0,cluster_support_radius-bushing_depth])
-//			cylinder (r=bushing_hole_r+2,h=0.5);
 		}
 	
 		color ([1,1,0,0.25])
 		translate([-50,-50,top?-equator_offset:-100-equator_offset])
 		cube([100,100,100]);
+	}
+}
+
+//hollow_dodecahedron();
+
+//intersection()
+//{
+////	hollow_dodecahedron();
+//	import_stl("hollow_dodecahedron.stl");
+//	cube([1,1,1]*cluster_support_radius*4);
+//}
+
+module hollow_dodecahedron()
+{
+	difference ()
+	{
+		dodecahedron (height=2*cluster_support_radius);
+		dodecahedron (height=2*(cluster_support_radius-bushing_depth));
+		cylinder(r=0.2,h=3*cluster_support_radius);
 	}
 }
 
@@ -961,40 +866,6 @@ module dodecahedron(height=10)
 	}
 }
 
-//strut2();
-module strut2(hole=true)
-{
-	bushing_hole_r=4/2;
-	bushing_depth=7;
-	rod_hole_r=3/16*25.4/2*0.9;
-	big=50;
-
-	clearance=1.5;
-
-	screw_head_r=6.8/2+clearance;
-//	screw_head_height=3.7+clearance;
-	screw_head_height=big/2-bushing_depth+1;
-
-	difference ()
-	{
-		translate([0,0,big/2-cluster_support_radius])
-		cube ([big,big,big],center=true);
-
-		if (hole)
-		{
-			translate([0,0,-cluster_support_radius-1])
-			cylinder ($fn=20,r=bushing_hole_r,h=cluster_support_radius+2);
-		
-			translate([0,0,-cluster_support_radius+bushing_depth-1])
-			cylinder ($fn=20,r=screw_head_r,h=screw_head_height+1);
-		}
-		else
-		{
-			translate([0,0,-big])
-			cylinder($fn=20,r=rod_hole_r,h=big);
-		}
-	}
-}
 
 handle_hub_diameter=18; 
 handle_shaft_diameter=3/16*25.4;

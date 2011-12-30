@@ -37,11 +37,7 @@ module barclamp()
 
 			rotate(90)
 			translate([0,-18,outer_radius])
-			{
-			teardrop(r=outer_radius,h=clamp_height);
-			rotate([180,0,0])
-			teardrop(r=outer_radius,h=clamp_height);
-			}
+			teardrop(r=outer_radius,h=clamp_height,top_and_bottom=true);
 		}
 	
 		translate([outer_radius,outer_radius-slot_width/2,-1])

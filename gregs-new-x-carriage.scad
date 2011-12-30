@@ -102,11 +102,11 @@ module gregs_x_carriage(with_fanmount=true)
 			}
 
 			translate([25+13.5+1,(lm8uu_holder_length*0.7+holder_separation/2)])
-			belt_clamp_socket ();
+			belt_clamp_socket (version=1);
 
 			mirror([0,1,0])
 			translate([25+13.5+1,(lm8uu_holder_length*0.7+holder_separation/2)])
-			belt_clamp_socket ();
+			belt_clamp_socket (version=0);
 
 			// Thicker bit around the big hole.
 
@@ -189,7 +189,7 @@ module cable_tie_holes ()
 	}
 }
 
-module belt_clamp_socket()
+module belt_clamp_socket(version=0)
 {
 	difference()
 	{
@@ -201,6 +201,17 @@ module belt_clamp_socket()
 			for(i=[-1,1])
 			translate([belt_clamp_hole_separation/2,0,0])
 			cylinder(r=belt_clamp_width/2,h=belt_clamp_height,center=true);
+			if (version==1)
+			translate([belt_clamp_hole_separation/2,0,0])
+			{
+			difference()
+			{
+				translate([0,0,belt_thickness/2])
+				cylinder(r=belt_clamp_width/2,h=belt_clamp_height+belt_thickness,center=true);
+				translate([-belt_clamp_width/2,-belt_clamp_width/2-1,-belt_clamp_height/2-1])
+				cube([belt_clamp_width/2+2,belt_clamp_width+2,belt_clamp_height+belt_thickness+2]);
+			}
+			}
 		}
 	}
 }
@@ -248,12 +259,12 @@ module belt_clamp_holes(version)
 		{
 			rotate([90,0,0])
 			rotate(360/16)
-			cylinder(r=m3_diameter/2-0.3 /*tight*/ ,h=belt_clamp_width+2,
+			cylinder(r=m3_diameter/2 ,h=belt_clamp_width+2,
 				center=true,$fn=8);
 	
 			rotate([90,0,0]) 
 			translate([0,0,belt_clamp_width/2])
-			cylinder(r=m3_nut_diameter/2-0.3 /*tight*/ ,h=3.4,center=true,$fn=6);
+			cylinder(r=m3_nut_diameter/2,h=3.4,center=true,$fn=6);
 
 			for(i=[-1:1])
 			translate([-belt_width/2,-tooth_spacing/4+i*tooth_spacing,
@@ -284,6 +295,8 @@ module belt_clamp(version)
 			for(i=[-1,1])
 			translate([i*belt_clamp_hole_separation/2,0,0])
 			cylinder(r=belt_clamp_width/2,h=belt_clamp_clamp_height,center=true);
+
+			
 
 			if (version==1)
 			translate([-belt_clamp_hole_separation/2,0,
@@ -440,7 +453,7 @@ function rotated(a)=[cos(a),sin(a),0];
 
 ram_height=belt_width;
 ram_length=1.5;
-ram_lip=1.5;
+ram_lip=0.5;
 
 module ram() 
 { 
