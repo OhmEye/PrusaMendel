@@ -1,7 +1,7 @@
 Format is tab separated skeinforge settings.
 _Name                          	Value
 WindowPosition	149+9
-Open File for Skeinforge	C:/Users/Greg/Desktop/reprap/GregPrusaMendel/backlash-calibration.stl
+Open File for Skeinforge	C:/Users/Greg/Desktop/reprap/GregPrusaMendel/spool_centre.stl
 analyze	False
 craft	True
 help	False
