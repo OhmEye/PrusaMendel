@@ -75,8 +75,6 @@ module z_stop()
 		difference()
 		{
 			cylinder(r=z_stop_width/2,h=z_stop_height*2,$fn=32);
-			translate([0,0,z_stop_height])
-			cylinder(r=m3_diameter/2,h=z_stop_height*2,$fn=32);
 		}
 
 		difference()

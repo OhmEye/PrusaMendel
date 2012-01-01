@@ -221,7 +221,7 @@ module xend(endstop_mount=false,closed_end=true,curved_sides=false,override_heig
 
 endstop_thickness=3; 
 endstop_w=14;
-endstop_l=18;
+endstop_l=17;
 endstop_h=18;
 
 module endstop_mount()

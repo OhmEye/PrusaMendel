@@ -3,7 +3,7 @@ teardrop();
 module teardrop (r=4.5,h=20,top_and_bottom=false)
 {
 	rotate([-270,0,90])
-	linear_extrude(height=h)
+	linear_extrude(height=h,convexity=10)
 	{
 		circle(r=r, $fn = 24);
 		polygon(points=[[0,0],[r*cos(30),r*sin(30)],[0.5*r,r],[-0.5*r,r],[-r*cos(30),r*sin(30)]],
