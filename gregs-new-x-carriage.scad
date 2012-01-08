@@ -165,6 +165,10 @@ module gregs_x_carriage(with_fanmount=true)
 		fan_mount_holes();
 
 		cable_tie_holes();
+
+		for(i=[-1,1])
+		translate([38,i*18.4,-1])
+		cube([10,5,15],true);
 	}
 }
 
