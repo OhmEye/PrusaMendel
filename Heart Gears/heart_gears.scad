@@ -734,17 +734,22 @@ module 10tooth_inner ()
 
 function in_mask (mask,bit) = (mask % pow(2,bit)) > (pow(2,bit-1)-1);
 
-cluster_support_radius=17;
-bushing_hole_r=3.4/2;
+cluster_support_radius=17.5;
+bushing_hole_r=4.2/2;
 bushing_depth=8;
 rod_hole_r=3/16*25.4/2*0.9;
 equator_offset=2.7;
 
-m3_nut_diameter=5.6/cos(30);
+m3_nut_diameter=(5.5+0.2)/cos(30);
 m3_nut_depth=2;
 m3_head_diameter=5.8;
 
-washer_d=7;
+m4_nut_diameter=(7+0.2)/cos(30);
+m4_nut_depth=2.5;
+m4_head_diameter=7+0.2;
+
+
+washer_d=8.8+0.2;
 washer_thickness=0.4;
 
 bevel_gear_cluster_struts2 (top=true);
@@ -774,7 +779,7 @@ module bevel_gear_cluster_struts2 (top=false)
 					rotate([180*i,0,0])
 					translate([0,0,cluster_support_radius-bushing_depth+m3_nut_depth])
 					rotate([180,0,0])
-					cylinder ($fn=6,r=m3_nut_diameter/2,h=m3_nut_depth+0.5);
+					cylinder ($fn=6,r=m4_nut_diameter/2,h=m4_nut_depth+0.5);
 
 					for(i=[0:1])
 					rotate([180*i,0,0])
@@ -792,12 +797,12 @@ module bevel_gear_cluster_struts2 (top=false)
 						rotate([180*i,0,0])
 						translate([0,0,cluster_support_radius-bushing_depth+m3_nut_depth])
 						rotate([180,0,0])
-						cylinder ($fn=6,r=m3_nut_diameter/2,h=m3_nut_depth+0.5);
+						cylinder ($fn=6,r=m4_nut_diameter/2,h=m4_nut_depth+0.5);
 
 						for(i=[0:1])
 						rotate([180*i,0,0])
 						translate([0,0,cluster_support_radius-washer_thickness])
-						cylinder ($fn=32,r=washer_d/2,h=washer_thickness+0.5);
+#						cylinder ($fn=32,r=washer_d/2,h=washer_thickness+0.5);
 						}
 					}
 				}	

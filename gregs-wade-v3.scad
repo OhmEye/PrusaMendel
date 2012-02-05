@@ -94,14 +94,27 @@ jhead_mount=256;
  * @id extruder-spring
  */
 
-wade(hotend_mount=groovemount);
+wade(hotend_mount=jhead_mount);
+
+translate([-14,39,0])
+bearing_washer();
+
+//color([0.5,0.5,1])
+//import("gregs-wade-v3.stl");
+
+//translate([-28.5,0,0])
+//import("Toms_guided_greg_v2.stl");
 
 //Place for printing
-translate([78,-10,15.25])
+translate([50,56,15.25])
+rotate(180)
 rotate([0,-90,0])
 
 //Place for assembly.
 wadeidler(); 
+
+//color([0,1,1])
+//import ("idler.stl");
 
 //===================================================
 // Parameters defining the wade body:
@@ -170,6 +183,16 @@ idler_mounting_hole_elongation=1;
 idler_long_top=idler_mounting_hole_up+idler_mounting_hole_diameter/2+idler_mounting_hole_elongation+2.5;
 idler_long_bottom=idler_fulcrum_offset;
 idler_long_side=idler_long_top+idler_long_bottom;
+
+module bearing_washer()
+{
+	difference()
+	{
+		cylinder(r=hole_for_608/2-0.05,h=1);
+		translate([0,0,-1])
+		cylinder(r=8,h=3);
+	}
+}
 
 module wade (hotend_mount=0,legacy_mount=true)
 {
@@ -240,12 +263,17 @@ module wade (hotend_mount=0,legacy_mount=true)
 			{
 				rotate(-15)
 				translate([-(idler_hinge_r+3),-idler_hinge_r-2,-wade_block_depth/2])
+				difference()
+				{
 				cube([idler_hinge_r+3,
 					idler_hinge_r*2+4,
 					wade_block_depth/2-
 					idler_short_side/2+
 					idler_hinge_width+0.25+
 					layer_thickness]);
+				translate([idler_hinge_r+2,(idler_hinge_r*2+4)/2,-layer_thickness])
+				cylinder(r=idler_hinge_r+1,h=10,$fn=50);
+				}
 				rotate(-15)
 				translate([-(idler_hinge_r+3),-idler_hinge_r-2,
 					-idler_short_side/2+idler_hinge_width+0.25])
@@ -291,6 +319,8 @@ module wade (hotend_mount=0,legacy_mount=true)
 }
 
 function in_mask(mask,value)=(mask%(value*2))>(value-1); 
+
+//block_holes();
 
 module block_holes(legacy_mount=false)
 {
@@ -384,11 +414,25 @@ module block_holes(legacy_mount=false)
 			translate([0,0,8+layer_thickness])
 			cylinder(r=m8_clearance_hole/2,h=wade_block_depth-(8+layer_thickness)+2);	
 
+			translate([0,0,20-2])
+			cylinder(r=16/2,h=wade_block_depth-(8+layer_thickness)+2);	
+
 			// Filament feed.
 			translate([-filament_feed_hole_offset,0,wade_block_depth/2])
 			rotate([90,0,0])
 			rotate(360/16)
 			cylinder(r=filament_feed_hole_d/2,h=wade_block_depth*3,center=true,$fn=8);	
+
+			//Widened opening for hobbed bolt access.
+			translate([2,wade_block_height/2+2,wade_block_depth/2+0.2])
+			rotate([90,0,0])
+			rotate(-45)
+			union()
+			{
+			cylinder(r=5,h=wade_block_height,center=true,$fn=30);	
+			translate([-5,0,0])
+			cube([10,10,wade_block_height],center=true);
+			}
 
 			// Mounting holes on the base.
 			translate(legacy_mount?[-3.4,0,-1]:[0,0,0])
@@ -484,13 +528,22 @@ module motor_mount_holes()
 
 module wadeidler() 
 {
+	guide_height=12.3;
+	guide_length=10;
+
 	difference()
 	{
 		union()
 		{
 			//The idler block.
 			translate(idler_axis+[-idler_height/2+2,+idler_long_side/2-idler_long_bottom,0])
+			{
 			cube([idler_height,idler_long_side,idler_short_side],center=true);
+
+			//Filament Guide.
+			translate([guide_height/2+idler_height/2-1,idler_long_side/2-guide_length/2,0])
+#			cube([guide_height+1,guide_length,8],center=true);
+			}
 
 			// The fulcrum Hinge
 			translate(idler_fulcrum)
@@ -499,13 +552,22 @@ module wadeidler()
 				cylinder(h=idler_short_side,r=idler_hinge_r,center=true,$fn=60);
 				translate([-idler_end_length/2,0,0])
 				cube([idler_end_length,idler_hinge_r*2,idler_short_side],center=true);
-			}		
+			}
 		}
-	
+
+		//Filament Path	
+		translate(idler_axis+[2+guide_height,+idler_long_side-idler_long_bottom-guide_length/2,0])
+		{
+#		cube([7,guide_length+2,3.5],center=true);
+		translate([-7/2,0,0])
+		rotate([90,0,0])
+#		cylinder(h=guide_length+4,r=3.5/2,center=true,$fn=16);
+		}
+
 		//Back of idler.
 		translate(idler_axis+[-idler_height/2+2-idler_height,
 			idler_long_side/2-idler_long_bottom-10,0])
-		cube([idler_height,idler_long_side,idler_short_side],center=true);
+		cube([idler_height,idler_long_side,idler_short_side+2],center=true);
 
 		//Slot for idler fulcrum mount.
 		translate(idler_fulcrum)
