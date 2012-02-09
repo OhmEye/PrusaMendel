@@ -94,7 +94,7 @@ jhead_mount=256;
  * @id extruder-spring
  */
 
-wade(hotend_mount=jhead_mount);
+wade(hotend_mount=groovemount);
 
 translate([-14,39,0])
 bearing_washer();

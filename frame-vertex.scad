@@ -13,7 +13,7 @@
 include <configuration.scad>
 use <teardrop.scad>
 
-vertex(with_foot=true);
+vertex(with_foot=false);
 
 %import_stl("frame-vertex.stl");
 
