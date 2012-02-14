@@ -1,6 +1,6 @@
 // Greg's Wade Extruder. 
 // It is licensed under the Creative Commons - GNU GPL license. 
-// © 2010 by GregFrost
+//  2010 by GregFrost
 // Extruder based on prusa git repo.
 // http://www.thingiverse.com/thing:6713
 
@@ -16,6 +16,7 @@ grrf_peek_mount=32;
 wildseyed_mount=64;
 geared_extruder_nozzle=128; // http://reprap.org/wiki/Geared_extruder_nozzle
 jhead_mount=256;
+geeksbase_mount=512;
 
 //Set the hotend_mount to the sum of the hotends that you want the extruder to support:
 //e.g. wade(hotend_mount=groovemount+peek_reprapsource_mount);
@@ -314,6 +315,8 @@ module wade (hotend_mount=0,legacy_mount=true)
 				mendel_parts_v6_holes(insulator_d=15);
 			if (in_mask(hotend_mount,jhead_mount))
 				wildseyed_mount_holes(insulator_d=16);
+			if (in_mask (hotend_mount,geeksbase_mount))
+				geeksbase_holes ();
 		}
 	}
 }
@@ -808,4 +811,24 @@ module wildseyed_mount_holes(insulator_d=12.7)
 	rotate(90,[1,0,0])
 	translate([hole*(extruder_recess_d/2-1.5),3+1.5,-wade_block_depth/2-1])
 	cylinder(r=1.5,h=wade_block_depth+2,$fn=10);
+}
+
+module geeksbase_holes ()
+{
+	extruder_recess_d=10.8;
+	extruder_recess_h=20; 
+
+	// Recess in base
+	translate([0,0,-1])
+	cylinder(r=extruder_recess_d/2,h=extruder_recess_h+1);	
+
+	// Mounting holes to affix the extruder into the recess.
+	translate([5,0,min(extruder_recess_h/2, base_thickness-2)])
+	rotate([-90,0,0])
+	cylinder(r=m3_diameter/2-0.5,/*tight*/,h=wade_block_depth+2,center=true); 
+	translate([-5,0,min(extruder_recess_h/2, base_thickness-2)])
+	rotate([-90,0,0])
+	cylinder(r=m3_diameter/2-0.5,/*tight*/,h=wade_block_depth+2,center=true); 
+
+	//cylinder(r=m4_diameter/2-0.5/* tight */,h=wade_block_depth+2,center=true); 
 }
