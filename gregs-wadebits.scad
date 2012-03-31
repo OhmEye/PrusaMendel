@@ -11,6 +11,8 @@ translate([55,40,0])
 WadesL(); //this module call will make the large gear
 translate([15,60,0]) 
 WadesS(); //this module call will make the small gear
+translate([10,40,0]) 
+WadesS(); //this module call will make the small gear
 
 module WadesL(){
 	num_holes=7;
@@ -28,12 +30,12 @@ module WadesL(){
 			rim_width = 3,
 			hub_thickness = nut_trap_thickness+nut_trap_depth,
 			hub_diameter = 22,
-			bore_diameter = 8,
+			bore_diameter = m8_diameter,
 			circles=0);
 
 		translate([0,0,nut_trap_thickness])
 		rotate(30)
-		cylinder($fn=6,r=m8_nut_diameter/2-0.5,h=nut_trap_depth+1);
+		cylinder($fn=6,r=m8_nut_diameter/2,h=nut_trap_depth+1);
 
 color([0,0,1])
 		for (hole=[0:num_holes-1])
@@ -58,11 +60,11 @@ module WadesS(){
 			rim_thickness = 9,
 			hub_thickness = 18,
 			hub_diameter = 18,
-			bore_diameter = 5.25,
+			bore_diameter = 5.1,
 			circles=0);
-		translate([0,-5,17])cube([6.2,3,9],center = true);
-		translate([0,0,14])rotate([0,90,-90])rotate(30)cylinder(r=1.7,h=20);
-		translate([0,-5,14])rotate([0,90,-90])cylinder(r=6.2/2/cos(30),h=3,$fn=6,center=true);
+		translate([0,-5,17])cube([m3_nut_diameter*cos(30)+0.1,3,9],center = true);
+		translate([0,0,14])rotate([0,90,-90])rotate(180/8)cylinder(r=1.7,h=20,$fn=8);
+		translate([0,-5,14])rotate([0,90,-90])cylinder(r=m3_nut_diameter/2+0.05,h=3,$fn=6,center=true);
 	}
 }
 

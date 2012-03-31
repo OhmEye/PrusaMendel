@@ -6,7 +6,8 @@ union ()
 {
 	wade(hotend_mount=256);
 
-	translate([-30,84,15.25]) 
+	translate([-30,84,15.25])  // this is the translation for the 3mm version.
+//	translate([-30,84,13.92])  // this is the translation for the 1.75mm version.
 	rotate(180)
 	rotate([0,-90,0])
 	wadeidler();

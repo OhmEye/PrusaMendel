@@ -37,7 +37,8 @@ translate([-14,39,0])
 bearing_washer();
 
 //Place for printing
-translate([50,56,15.25])
+translate([50,56,15.25]) // This is the translation for the 3mm version.
+//translate([50,56,13.92]) // This is the translation for the 1.75mm version.
 rotate(180)
 rotate([0,-90,0])
 
@@ -150,9 +151,16 @@ hole_for_608=22.3;
 block_top_right=[wade_block_width,wade_block_height];
 
 layer_thickness=0.2;
-filament_feed_hole_d=4;
 filament_diameter=3;
-filament_feed_hole_offset=filament_diameter+0.5;
+filament_feed_hole_d=(filament_diameter*1.1)/cos(180/8);
+hobbing_depth=2;
+echo ("filament_feed_hole_d", filament_feed_hole_d);
+
+//This is the distance from the centre of the filament to the centre of the hobbed bolt.
+filament_feed_hole_offset=8/2-hobbing_depth+filament_diameter/2;
+
+echo ("filament_feed_hole_offset", filament_feed_hole_offset);
+
 idler_nut_trap_depth=7.5;
 idler_nut_thickness=3;
 
@@ -568,10 +576,10 @@ module wadeidler()
 		//Filament Path	
 		translate(idler_axis+[2+guide_height,+idler_long_side-idler_long_bottom-guide_length/2,0])
 		{
-		cube([7,guide_length+2,3.5],center=true);
+		cube([7,guide_length+2,filament_diameter+0.5],center=true);
 		translate([-7/2,0,0])
 		rotate([90,0,0])
-		cylinder(h=guide_length+4,r=3.5/2,center=true,$fn=16);
+		cylinder(h=guide_length+4,r=(filament_diameter+0.5)/2,center=true,$fn=16);
 		}
 
 		//Back of idler.
