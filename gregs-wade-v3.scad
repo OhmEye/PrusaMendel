@@ -6,7 +6,9 @@
 
 include<configuration.scad>
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Define the hotend_mounting style you want by specifying hotend_mount=style1+style2 etc.
+//e.g. wade(hotend_mount=groovemount+peek_reprapsource_mount);
 malcolm_hotend_mount=1;
 groovemount=2;
 peek_reprapsource_mount=4;
@@ -18,9 +20,31 @@ geared_extruder_nozzle=128; // http://reprap.org/wiki/Geared_extruder_nozzle
 jhead_mount=256;
 geeksbase_mount=512;
 
-//Set the hotend_mount to the sum of the hotends that you want the extruder to support:
-//e.g. wade(hotend_mount=groovemount+peek_reprapsource_mount);
+default_extruder_mount=jhead_mount;
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+mounting_holes_legacy=1;
+mounting_holes_symmetrical=2;
+default_mounting_holes=mounting_holes_symmetrical;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+wade(hotend_mount=default_extruder_mount,
+	mounting_holes=default_mounting_holes);
+
+translate([-14,39,0])
+bearing_washer();
+
+//Place for printing
+translate([50,56,15.25])
+rotate(180)
+rotate([0,-90,0])
+
+//Place for assembly.
+wadeidler(); 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * Extruder
  * @name Extruder
@@ -95,30 +119,9 @@ geeksbase_mount=512;
  * @id extruder-spring
  */
 
-wade(hotend_mount=groovemount);
-
-translate([-14,39,0])
-bearing_washer();
-
-//color([0.5,0.5,1])
-//import("gregs-wade-v3.stl");
-
-//translate([-28.5,0,0])
-//import("Toms_guided_greg_v2.stl");
-
-//Place for printing
-translate([50,56,15.25])
-rotate(180)
-rotate([0,-90,0])
-
-//Place for assembly.
-wadeidler(); 
-
-//color([0,1,1])
-//import ("idler.stl");
-
 //===================================================
 // Parameters defining the wade body:
+
 wade_block_height=55;
 wade_block_width=24;
 wade_block_depth=28;
@@ -129,7 +132,7 @@ base_thickness=7;
 base_length=70;
 base_leadout=25;
 
-nema17_hole_spacing=1.2*25.4; 
+nema17_hole_spacing=31; 
 nema17_width=1.7*25.4;
 nema17_support_d=nema17_width-nema17_hole_spacing;
 
@@ -141,12 +144,12 @@ motor_mount_translation=[50.5,34,0];
 motor_mount_thickness=12;
 
 m8_clearance_hole=8.8;
-hole_for_608=22.6;
+hole_for_608=22.3;
 608_diameter=22;
 
 block_top_right=[wade_block_width,wade_block_height];
 
-layer_thickness=0.4;
+layer_thickness=0.2;
 filament_feed_hole_d=4;
 filament_diameter=3;
 filament_feed_hole_offset=filament_diameter+0.5;
@@ -195,7 +198,9 @@ module bearing_washer()
 	}
 }
 
-module wade (hotend_mount=0,legacy_mount=true)
+module wade(
+	hotend_mount=default_extruder_mount,
+	mounting_holes=default_mounting_holes)
 {
 	difference ()
 	{
@@ -272,7 +277,7 @@ module wade (hotend_mount=0,legacy_mount=true)
 					idler_short_side/2+
 					idler_hinge_width+0.25+
 					layer_thickness]);
-				translate([idler_hinge_r+2,(idler_hinge_r*2+4)/2,-layer_thickness])
+				translate([idler_hinge_r+2,(idler_hinge_r*2+4)/2,layer_thickness*3])
 				cylinder(r=idler_hinge_r+1,h=10,$fn=50);
 				}
 				rotate(-15)
@@ -290,7 +295,7 @@ module wade (hotend_mount=0,legacy_mount=true)
 			motor_mount ();
 		}
 
-		block_holes(legacy_mount=legacy_mount);
+		block_holes(mounting_holes=mounting_holes);
 		motor_mount_holes ();
 
 		translate([motor_mount_translation[0]-gear_separation-filament_feed_hole_offset,
@@ -325,8 +330,9 @@ function in_mask(mask,value)=(mask%(value*2))>(value-1);
 
 //block_holes();
 
-module block_holes(legacy_mount=false)
+module block_holes(mounting_holes=default_mounting_holes)
 {
+echo("bhmh", mounting_holes)
 	//Round off the top of the block. 
 	translate([0,wade_block_height-block_bevel_r,-1])
 	render()
@@ -438,7 +444,8 @@ module block_holes(legacy_mount=false)
 			}
 
 			// Mounting holes on the base.
-			translate(legacy_mount?[-3.4,0,-1]:[0,0,0])
+			translate(
+				(mounting_holes==mounting_holes_legacy)?[-3.4,0,-1]:[0,0,0])
 			for (mount=[0:1])
 			{
 				translate([-filament_feed_hole_offset+25*((mount<1)?1:-1),
@@ -467,13 +474,13 @@ module block_holes(legacy_mount=false)
 			wade_block_depth/2+idler_mounting_hole_across*idle])
 		rotate([0,90,0])
 		{
-			rotate([0,0,30])
-			{
-				translate([0,0,-1])
-				cylinder(r=m3_diameter/2,h=wade_block_depth+6,$fn=6);	
-				translate([0,0,wade_block_width-idler_nut_trap_depth])
-				cylinder(r=m3_nut_diameter/2,h=idler_nut_thickness,$fn=6);	
-			}
+			rotate([0,0,180/8])
+			translate([0,0,-1])
+			cylinder(r=m3_diameter/2,h=wade_block_depth+6,$fn=8);	
+			rotate([0,0,180/6])
+			translate([0,0,wade_block_width-idler_nut_trap_depth])
+			cylinder(r=m3_nut_diameter/2,h=idler_nut_thickness,$fn=6);	
+
 			translate([0,10/2,wade_block_width-idler_nut_trap_depth+idler_nut_thickness/2])
 			cube([m3_nut_diameter*cos(30),10,idler_nut_thickness],center=true);
 		}
@@ -545,7 +552,7 @@ module wadeidler()
 
 			//Filament Guide.
 			translate([guide_height/2+idler_height/2-1,idler_long_side/2-guide_length/2,0])
-#			cube([guide_height+1,guide_length,8],center=true);
+			cube([guide_height+1,guide_length,8],center=true);
 			}
 
 			// The fulcrum Hinge
@@ -561,10 +568,10 @@ module wadeidler()
 		//Filament Path	
 		translate(idler_axis+[2+guide_height,+idler_long_side-idler_long_bottom-guide_length/2,0])
 		{
-#		cube([7,guide_length+2,3.5],center=true);
+		cube([7,guide_length+2,3.5],center=true);
 		translate([-7/2,0,0])
 		rotate([90,0,0])
-#		cylinder(h=guide_length+4,r=3.5/2,center=true,$fn=16);
+		cylinder(h=guide_length+4,r=3.5/2,center=true,$fn=16);
 		}
 
 		//Back of idler.
@@ -601,7 +608,7 @@ module wadeidler()
 
 		//Fulcrum hole.
 		translate(idler_fulcrum)
-		rotate(360/12)
+		rotate(180/8)
 		cylinder(h=idler_short_side+2,r=m3_diameter/2-0.1,center=true,$fn=8);
 
 		//Nut trap for fulcrum screw.
