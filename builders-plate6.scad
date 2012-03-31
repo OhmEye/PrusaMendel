@@ -4,7 +4,7 @@ use <gregs-wadebits.scad>
 
 union ()
 {
-	wade(hotend_mount=256,legacy_mount=false);
+	wade(hotend_mount=256);
 
 	translate([-30,84,15.25]) 
 	rotate(180)
