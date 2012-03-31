@@ -39,16 +39,19 @@ race_inside_radius=ball_translation+ball_diameter/3;
 
 //bushing_race ();
 
+//cross_piece();
+//translate([0,(arm_width+2),0])
 //spoke();
 
-race ();
-hub();
-translate((race_radius+race_inside_radius)/sqrt(2)*[-1,-1,0])
-hub();
 
-translate([-40,10])
-rotate(30)
-balls();
+//race ();
+//hub();
+//translate((race_radius+race_inside_radius)/sqrt(2)*[-1,-1,0])
+//hub();
+//
+//translate([-40,10])
+//rotate(30)
+//balls();
 
 //for(i=[-1:-3])
 //translate([0,i*(arm_width+2),0])
@@ -59,6 +62,9 @@ balls();
 //spoke();
 
 //test_dovetail ();
+
+race_for_viks();
+
 
 module test_dovetail ()
 {
@@ -79,6 +85,11 @@ module balls()
 	for(i=[0:5])
 	for(j=[0:2])
 	translate([i*(ball_diameter+2),j*(ball_diameter+2),0])
+	ball();
+}
+
+module ball()
+{
 	difference()
 	{
 		sphere(r=ball_diameter/2,$fn=ball_facets);
@@ -111,6 +122,43 @@ module race()
 		translate([-ball_translation-ball_diameter/2-bearing_slop-arm_stub_length,0,0])
 		dovetail(height=dovetail_height+2,width=dovetail_width+0.5,male=false);
 	}
+}
+
+module race_for_viks()
+{
+	arm_stub_length=53;
+
+	difference()
+	{
+		union()
+		{
+			render()
+			translate([0,0,dovetail_height/4])
+			difference()
+			{
+			cylinder(r=race_radius*1.5,h=dovetail_height/2,center=true,$fn=bearing_facets);
+			cylinder(r=race_radius*1.5-7,h=dovetail_height+2,center=true,$fn=bearing_facets);
+			}
+			for(arm=[0:2])
+			rotate(arm*360/3)
+			{
+				translate([-arm_stub_length/2,0,dovetail_height/2])
+				cube([arm_stub_length,arm_width,dovetail_height],center=true);
+		
+				render()intersection()
+				{
+					translate([-50,-arm_width/2,0])
+					cube([10,arm_width,race_outside_height]);
+					translate([0,0,-1])
+					cylinder(r=50,h=20,$fn=200);
+				}
+			}
+		}
+
+		translate([0,0,dovetail_height/2])
+		cylinder(r=9/2,h=dovetail_height+2,center=true,$fn=20);
+	}
+
 }
 
 module bushing_race()

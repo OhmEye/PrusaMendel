@@ -13,7 +13,7 @@ union ()
 
 	translate([28,90,0])
 	WadesL();
-
-//	translate([8,66,0])
-//	WadesS();
+	
+	translate([50,34,0])
+	bearing_washer();
 }

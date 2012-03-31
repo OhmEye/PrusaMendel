@@ -14,7 +14,7 @@ coded_colors=[
 [1,1,1,1],				// 8 white
 [0.5,0.5,0.5,1],			// 9 grey
 [1,0.5,0.75,1],			// 10 pink
-[0.5,0.5,1]			// 11 khaki
+[0.5,0.5,1]				// 11 khaki
 ];
 
 // Define the parameters for the two types of gears to use.
@@ -51,6 +51,7 @@ small_gear_rotate =
 		(cos (90 - pitch_angle1 - pitch_angle2) * cos (72)) /
 		sin (90 - pitch_angle1 - pitch_angle2)	);
 
+
 gear_bottom_apex_height=45.5;
 gear_bottom_apex_thickness=24;
 bearing_depth=17;
@@ -59,7 +60,35 @@ bearing_depth=17;
 bearing_id = 05;
 bearing_od = 10;
 
-gear_support_gap=2;
+cluster_support_radius=17.5;
+gear_support_gap=3.8;
+
+gear_mount_radius=6.5;
+gear_mount_clearance=0.1;
+gear_mount_height=31;
+gear_mount_shorter=0.8;
+
+gear_mount_screw_head_r=7.5/2;
+gear_mount_screw_head_d=6;
+
+involute_facets=10;
+
+gear_mount();
+
+module gear_mount()
+{
+	h=gear_mount_height-gear_mount_shorter;
+
+	difference()
+	{
+		cylinder(r=gear_mount_radius,h=h,$fn=40);
+		translate([0,0,-1])
+		cylinder(r=4.5/cos(180/8)/2,h=h+2,$fn=8);
+
+		translate([0,0,h-gear_mount_screw_head_d])
+		cylinder(r=gear_mount_screw_head_r,h=gear_mount_screw_head_d+0.5);
+	}
+}
 
 //===========================================================
 
@@ -67,16 +96,18 @@ gear_support_gap=2;
 //translate ([0,0,15])
 //heart (width=heart_width);
 
-gear_num=0; // 0 for all gears.
+gear_num=0	; // 0 for all gears.
 gear_mask= (gear_num==0) ? 4095 : pow(2,gear_num-1);
+
+//bevel_gear_cluster();
 
 // This intersects the gear cluster with the heart stl created above.
 // I used it to get an aesthetically pleasing orientation.
-//intersected_gears(use_stl=false);
+//intersected_gears(use_stl=true);
 
 // This is used to generate the individual gear#.stl files where # is the gear number from 1 to 12. 
 // It does this by intersecting them and then reversing the rotation so that the gear is upright again.
-//repositioned_gear();
+//repositioned_gear(use_stl=false);
 
 // This uses the generated STLs to show a colour coded version of the gear cluster. 
 // Use it to aid with assembly.
@@ -119,16 +150,16 @@ gear_mask= (gear_num==0) ? 4095 : pow(2,gear_num-1);
 //handle();
 //knob();
 
-module repositioned_gear ()
+module repositioned_gear (use_stl=false)
 {
+	translate([0,0,-cluster_support_radius-gear_support_gap])
 	rotate ([180,0,0])
-//	translate ([0,0,gear_bottom_apex_height])
 	difference()
 	{
 		if (gear_num == 1)
 		{
 			rotate ([180,0,0])
-			intersected_gears ();
+			intersected_gears (use_stl=use_stl);
 		}
 		else if (gear_num == 2)
 		{
@@ -136,7 +167,7 @@ module repositioned_gear ()
 			rotate([0,big_gear_rotate,0])
 			rotate ([0,-180,0])
 			rotate ([0,0,-280])
-			intersected_gears ();
+			intersected_gears (use_stl=use_stl);
 		}
 		else if (gear_num == 3)
 		{
@@ -145,7 +176,7 @@ module repositioned_gear ()
 			rotate([0,0,-360*2/5])
 			rotate ([0,-180,0])
 			rotate ([0,0,-280])
-			intersected_gears ();
+			intersected_gears (use_stl=use_stl);
 		}
 		else if (gear_num >= 4 && gear_num <= 8)
 		{
@@ -153,14 +184,14 @@ module repositioned_gear ()
 			rotate([0,0,-360/5*(gear_num-4)])
 			rotate ([0,-180,0])
 			rotate ([0,0,-280])
-			intersected_gears ();
+			intersected_gears (use_stl=use_stl);
 		}
 		else if (gear_num == 9)
 		{
 			rotate([0,-180,0])
 			rotate ([0,-180,0])
 			rotate ([0,0,-280])
-			intersected_gears ();
+			intersected_gears (use_stl=use_stl);
 		}
 		else if (gear_num == 10)
 		{
@@ -168,7 +199,7 @@ module repositioned_gear ()
 			rotate([0,0,-360/10*7])
 			rotate ([0,-180,0])
 			rotate ([0,0,-280])
-			intersected_gears ();
+			intersected_gears (use_stl=use_stl);
 		}
 		else if (gear_num == 11)
 		{
@@ -176,7 +207,7 @@ module repositioned_gear ()
 			rotate([0,0,-360/10*3])
 			rotate ([0,-180,0])
 			rotate ([0,0,-280])
-			intersected_gears ();
+			intersected_gears (use_stl=use_stl);
 		}
 		else if (gear_num == 12)
 		{
@@ -184,16 +215,23 @@ module repositioned_gear ()
 			rotate([0,0,-360/10*1])
 			rotate ([0,-180,0])
 			rotate ([0,0,-280])
-			intersected_gears ();
+			intersected_gears (use_stl=use_stl);
 		}
 		else
 		{
-			intersected_gears ();
+			intersected_gears (use_stl=use_stl);
 		}
 		
 		rotate([180,0,0])
-		translate([-150,-150,-1])
-		cube([300,300,cluster_support_radius+gear_support_gap+1]);
+		{
+			translate([-150,-150,-1])
+			cube([300,300,cluster_support_radius+gear_support_gap+1]);
+
+			translate([0,0,cluster_support_radius+gear_support_gap-1])
+			cylinder(h=gear_mount_height+1,r=gear_mount_radius,$fn=40);		
+//			translate([0,0,cluster_support_radius+gear_support_gap])
+//			cylinder(h=2,r=3,$fn=3,center=true);
+		}
 	}	
 }
 
@@ -204,15 +242,16 @@ module intersected_gears (use_stl=false)
 		rotate ([0,0,280])
 		rotate ([0,180,0])
 		bevel_gear_cluster (use_stl=use_stl);
-		translate([0,0,-38])
+		translate([0,0,-10])
 		scale([2,2.2,2])
-		import_stl("heart2.stl");
-*		import_stl("heart.stl");
+		import("heart2.stl");
+//		import("heart.stl");
 	}
 }
 
 module pretty_gears ()
 {
+	rotate([0,0,-$t*360*2.7])
 	rotate ([0,0,280])
 	rotate ([0,180,0])
 	bevel_gear_cluster (use_stl=true);
@@ -228,8 +267,9 @@ module bevel_gear_cluster (use_stl=false)
 		{
 			rotate([0,0,90+360/30-2])
 			rotate([180,0,0])
-			translate([0,0,-pitch_apex1])
-			import_stl("gear1.stl");
+			translate([0,0,-pitch_apex1+cluster_support_radius+gear_support_gap])
+			rotate($t*360*2)
+			import("gear1.stl");
 		}
 		else
 		{
@@ -240,7 +280,8 @@ module bevel_gear_cluster (use_stl=false)
 				pressure_angle=30,
 				outside_circular_pitch=outside_circular_pitch,
 				bore_diameter=0,
-				backlash = 1);
+				backlash = 1,
+				involute_facets=involute_facets);
 		}
 	}
 
@@ -253,8 +294,9 @@ module bevel_gear_cluster (use_stl=false)
 		if (use_stl)
 		{
 			rotate([180,0,0])
-			translate([0,0,-pitch_apex1])
-			import_stl("gear2.stl");
+			translate([0,0,-pitch_apex1+cluster_support_radius+gear_support_gap])
+			rotate($t*360*2)
+			import("gear2.stl");
 		}
 		else
 		{
@@ -265,7 +307,8 @@ module bevel_gear_cluster (use_stl=false)
 				pressure_angle=30,
 				outside_circular_pitch=outside_circular_pitch,
 				bore_diameter=0,
-				backlash = 1);
+				backlash = 1,
+				involute_facets=involute_facets);
 		}
 	}
 
@@ -279,8 +322,9 @@ module bevel_gear_cluster (use_stl=false)
 		if (use_stl)
 		{
 			rotate([180,0,0])
-			translate([0,0,-pitch_apex1])
-			import_stl("gear3.stl");
+			translate([0,0,-pitch_apex1+cluster_support_radius+gear_support_gap])
+			rotate($t*360*2)
+			import("gear3.stl");
 		}
 		else
 		{
@@ -291,7 +335,8 @@ module bevel_gear_cluster (use_stl=false)
 				pressure_angle=30,
 				outside_circular_pitch=outside_circular_pitch,
 				bore_diameter=0,
-				backlash = 1);
+				backlash = 1,
+				involute_facets=involute_facets);
 		}
 	}
 
@@ -307,28 +352,33 @@ module bevel_gear_cluster (use_stl=false)
 			{
 				if (i==0)
 				rotate([180,0,0])
-				translate([0,0,-pitch_apex2])
-				import_stl("gear4.stl");
+				translate([0,0,-pitch_apex2+cluster_support_radius+gear_support_gap])
+				rotate(-$t*360*3)
+				import("gear4.stl");
 
 				if (i==1)
 				rotate([180,0,0])
-				translate([0,0,-pitch_apex2])
-				import_stl("gear5.stl");
+				translate([0,0,-pitch_apex2+cluster_support_radius+gear_support_gap])
+				rotate(-$t*360*3)
+				import("gear5.stl");
 
 				if (i==2)
 				rotate([180,0,0])
-				translate([0,0,-pitch_apex2])
-				import_stl("gear6.stl");
+				translate([0,0,-pitch_apex2+cluster_support_radius+gear_support_gap])
+				rotate(-$t*360*3)
+				import("gear6.stl");
 
 				if (i==3)
 				rotate([180,0,0])
-				translate([0,0,-pitch_apex2])
-				import_stl("gear7.stl");
+				translate([0,0,-pitch_apex2+cluster_support_radius+gear_support_gap])
+				rotate(-$t*360*3)
+				import("gear7.stl");
 
 				if (i==4)
 				rotate([180,0,0])
-				translate([0,0,-pitch_apex2])
-				import_stl("gear8.stl");
+				translate([0,0,-pitch_apex2+cluster_support_radius+gear_support_gap])
+				rotate(-$t*360*3)
+				import("gear8.stl");
 			}
 			else
 			{
@@ -339,7 +389,8 @@ module bevel_gear_cluster (use_stl=false)
 					pressure_angle=30,
 					outside_circular_pitch=outside_circular_pitch,
 					bore_diameter=0,
-					backlash = 1);
+					backlash = 1,
+					involute_facets=involute_facets);
 			}
 		}
 	}
@@ -352,8 +403,9 @@ module bevel_gear_cluster (use_stl=false)
 		if (use_stl)
 		{
 			rotate([180,0,0])
-			translate([0,0,-pitch_apex2])
-			import_stl("gear9.stl");
+			translate([0,0,-pitch_apex2+cluster_support_radius+gear_support_gap])
+			rotate(-$t*360*3)
+			import("gear9.stl");
 		}
 		else
 		{
@@ -364,7 +416,8 @@ module bevel_gear_cluster (use_stl=false)
 				pressure_angle=30,
 				outside_circular_pitch=outside_circular_pitch,
 				bore_diameter=0,
-				backlash = 1);
+				backlash = 1,
+				involute_facets=involute_facets);
 		}
 	}
 
@@ -377,8 +430,9 @@ module bevel_gear_cluster (use_stl=false)
 		if (use_stl)
 		{
 			rotate([180,0,0])
-			translate([0,0,-pitch_apex2])
-			import_stl("gear10.stl");
+			translate([0,0,-pitch_apex2+cluster_support_radius+gear_support_gap])
+			rotate(-$t*360*3)
+			import("gear10.stl");
 		}
 		else
 		{
@@ -389,7 +443,8 @@ module bevel_gear_cluster (use_stl=false)
 				pressure_angle=30,
 				outside_circular_pitch=outside_circular_pitch,
 				bore_diameter=0,
-				backlash = 1);
+				backlash = 1,
+				involute_facets=involute_facets);
 		}
 	}
 
@@ -402,8 +457,9 @@ module bevel_gear_cluster (use_stl=false)
 		if (use_stl)
 		{
 			rotate([180,0,0])
-			translate([0,0,-pitch_apex2])
-			import_stl("gear11.stl");
+			translate([0,0,-pitch_apex2+cluster_support_radius+gear_support_gap])
+			rotate(-$t*360*3)
+			import("gear11.stl");
 		}
 		else
 		{
@@ -414,7 +470,8 @@ module bevel_gear_cluster (use_stl=false)
 				pressure_angle=30,
 				outside_circular_pitch=outside_circular_pitch,
 				bore_diameter=0,
-				backlash = 1);
+				backlash = 1,
+				involute_facets=involute_facets);
 		}
 	}
 
@@ -427,8 +484,9 @@ module bevel_gear_cluster (use_stl=false)
 		if (use_stl)
 		{
 			rotate([180,0,0])
-			translate([0,0,-pitch_apex2])
-			import_stl("gear12.stl");
+			translate([0,0,-pitch_apex2+cluster_support_radius+gear_support_gap])
+			rotate(-$t*360*3)
+			import("gear12.stl");
 		}
 		else
 		{
@@ -439,7 +497,8 @@ module bevel_gear_cluster (use_stl=false)
 				pressure_angle=30,
 				outside_circular_pitch=outside_circular_pitch,
 				bore_diameter=0,
-				backlash = 1);
+				backlash = 1,
+				involute_facets=involute_facets);
 		}
 	}
 }
@@ -447,32 +506,32 @@ module bevel_gear_cluster (use_stl=false)
 module gear_lineup ()
 {
 	translate([0,0,0])
-	import_stl("gear1.stl");
+	import("gear1.stl");
 	translate([100,0,0])
-	import_stl("gear2.stl");
+	import("gear2.stl");
 	translate([200,0,0])
-	import_stl("gear3.stl");
+	import("gear3.stl");
 	translate([300,0,0])
-	import_stl("gear4.stl");
+	import("gear4.stl");
 	translate([400,0,0])
-	import_stl("gear5.stl");
+	import("gear5.stl");
 	translate([500,0,0])
-	import_stl("gear6.stl");
+	import("gear6.stl");
 	translate([600,0,0])
-	import_stl("gear7.stl");
+	import("gear7.stl");
 	translate([700,0,0])
-	import_stl("gear8.stl");
-	translate([800,0,0])
 	{
-	import_stl("gear9.stl");
-	cylinder(r=20,h=120);
+	import("gear8.stl");
+	cylinder(r=20,h=90);
 	}
+	translate([800,0,0])
+	import("gear9.stl");
 	translate([900,0,0])
-	import_stl("gear10.stl");
+	import("gear10.stl");
 	translate([1000,0,0])
-	import_stl("gear11.stl");
+	import("gear11.stl");
 	translate([1100,0,0])
-	import_stl("gear12.stl");
+	import("gear12.stl");
 }
 sphere_r=18;
 clearance=0.5;
@@ -484,7 +543,7 @@ module gear12_outer ()
 	difference ()
 	{
 		translate ([0,0,-gear_height-sphere_r-clearance])
-		import_stl ("gear12.stl");
+		import ("gear12.stl");
 	
 		translate ([-60,-60,-120])
 		cube ([120,120,120]);	
@@ -502,7 +561,7 @@ module gear11_outer ()
 	difference ()
 	{
 		translate ([0,0,-gear_height-sphere_r-clearance])
-		import_stl ("gear11.stl");
+		import ("gear11.stl");
 	
 		translate ([-60,-60,-120])
 		cube ([120,120,120]);	
@@ -520,7 +579,7 @@ module gear10_outer ()
 	difference ()
 	{
 		translate ([0,0,-gear_height-sphere_r-clearance])
-		import_stl ("gear10.stl");
+		import ("gear10.stl");
 	
 		translate ([-60,-60,-120])
 		cube ([120,120,120]);	
@@ -538,7 +597,7 @@ module gear9_outer ()
 	difference ()
 	{
 		translate ([0,0,-gear_height-sphere_r-clearance])
-		import_stl ("gear9.stl");
+		import ("gear9.stl");
 
 		translate ([-60,-60,-120])
 		cube ([120,120,120]);	
@@ -567,7 +626,7 @@ module gear8_outer ()
 	difference ()
 	{
 		translate ([0,0,-gear_height-sphere_r-clearance])
-		import_stl ("gear8.stl");
+		import ("gear8.stl");
 	
 		translate ([-60,-60,-120])
 		cube ([120,120,120]);	
@@ -585,7 +644,7 @@ module gear7_outer ()
 	difference ()
 	{
 		translate ([0,0,-gear_height-sphere_r-clearance])
-		import_stl ("gear7.stl");
+		import ("gear7.stl");
 	
 		translate ([-60,-60,-120])
 		cube ([120,120,120]);	
@@ -599,7 +658,7 @@ module gear6_outer ()
 	difference ()
 	{
 		translate ([0,0,-gear_height-sphere_r-clearance])
-		import_stl ("gear6.stl");
+		import ("gear6.stl");
 	
 		translate ([-60,-60,-120])
 		cube ([120,120,120]);	
@@ -613,7 +672,7 @@ module gear5_outer ()
 	difference ()
 	{
 		translate ([0,0,-gear_height-sphere_r-clearance])
-		import_stl ("gear5.stl");
+		import ("gear5.stl");
 	
 		translate ([-60,-60,-120])
 		cube ([120,120,120]);	
@@ -629,7 +688,7 @@ module gear4_outer ()
 	difference ()
 	{
 		translate ([0,0,-gear_height-sphere_r-clearance])
-		import_stl ("gear4.stl");
+		import ("gear4.stl");
 	
 		translate ([-60,-60,-120])
 		cube ([120,120,120]);
@@ -643,7 +702,7 @@ module gear3_outer ()
 	difference ()
 	{
 		translate ([0,0,-gear_height-sphere_r-clearance])
-		import_stl ("gear3.stl");
+		import ("gear3.stl");
 	
 		translate ([-60,-60,-120])
 		cube ([120,120,120]);	
@@ -659,7 +718,7 @@ module gear2_outer ()
 	difference ()
 	{
 		translate ([0,0,-gear_height-sphere_r-clearance])
-		import_stl ("gear2.stl");
+		import ("gear2.stl");
 	
 		translate ([-60,-60,-120])
 		cube ([120,120,120]);	
@@ -673,7 +732,7 @@ module gear1_outer ()
 	difference ()
 	{
 		translate ([0,0,-gear_height-sphere_r-clearance])
-		import_stl ("gear1.stl");
+		import ("gear1.stl");
 	
 		translate ([-60,-60,-120])
 		cube ([120,120,120]);
@@ -704,7 +763,7 @@ module 15tooth_inner ()
 		{
 			rotate([0,180,0])
 			translate ([0,0,-gear_height-sphere_r-clearance])
-			import_stl ("gear1.stl");
+			import ("gear1.stl");
 	
 			translate ([-60,-60,])
 			cube ([120,120,gear_height]);
@@ -722,7 +781,7 @@ module 10tooth_inner ()
 		{
 			rotate([0,180,0])
 			translate ([0,0,-gear_height-sphere_r-clearance])
-			import_stl ("gear4.stl");
+			import ("gear4.stl");
 	
 			translate ([-60,-60,])
 			cube ([120,120,gear_height]);
@@ -734,7 +793,6 @@ module 10tooth_inner ()
 
 function in_mask (mask,bit) = (mask % pow(2,bit)) > (pow(2,bit-1)-1);
 
-cluster_support_radius=17.5;
 bushing_hole_r=4.2/2;
 bushing_depth=8;
 rod_hole_r=3/16*25.4/2*0.9;
@@ -752,10 +810,10 @@ m4_head_diameter=7+0.2;
 washer_d=8.8+0.2;
 washer_thickness=0.4;
 
-bevel_gear_cluster_struts2 (top=true);
-translate([cluster_support_radius*2.4,0,0])
-rotate([0,0,180])
-bevel_gear_cluster_struts2 (top=false);
+//bevel_gear_cluster_struts2 (top=true);
+//translate([cluster_support_radius*2.4,0,0])
+//rotate([0,0,180])
+//bevel_gear_cluster_struts2 (top=false);
 
 module bevel_gear_cluster_struts2 (top=false)
 {
@@ -773,7 +831,7 @@ module bevel_gear_cluster_struts2 (top=false)
 				difference ()
 				{
 //					hollow_dodecahedron();
-					import_stl("hollow_dodecahedron.stl");
+					import("hollow_dodecahedron.stl");
 					cylinder ($fn=16,r=bushing_hole_r,h=2*cluster_support_radius+2,center=true);
 					for(i=[0:1])
 					rotate([180*i,0,0])
@@ -840,7 +898,7 @@ module bevel_gear_cluster_struts2 (top=false)
 //intersection()
 //{
 ////	hollow_dodecahedron();
-//	import_stl("hollow_dodecahedron.stl");
+//	import("hollow_dodecahedron.stl");
 //	cube([1,1,1]*cluster_support_radius*4);
 //}
 

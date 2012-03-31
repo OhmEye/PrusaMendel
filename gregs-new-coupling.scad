@@ -112,10 +112,10 @@ module coupling()
 		{
 			cylinder(r=flange_diameter/2, h=m8_nut_height,$fn=6);		
 			for (i=[0:2])
-			rotate(120*i)
+#			rotate(120*i)
 			{
-				translate([-flange_diameter/2*sin(30),flange_diameter*cos(30)/2-m8_overlap/2,0])
-				cube([flange_diameter*sin(30),m8_overlap/2,2*m8_nut_height+1]);
+				translate([-flange_diameter/2*sin(30),flange_diameter*cos(30)/2-m8_overlap*0.8,0])
+				cube([flange_diameter*sin(30),m8_overlap*0.8,2*m8_nut_height+1]);
 			}
 		}
 		translate([0,0,-1])
